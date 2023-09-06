@@ -75,7 +75,6 @@ function createWindow() {
         event.newGuest = new BrowserWindow(options);
         // event.newGuest.setContentProtection(true);
         event.newGuest.setSkipTaskbar(true);
-        event.newGuest.setContentProtection(true);
       }
     }
   );
