@@ -19,6 +19,7 @@ const Home = () => {
     useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState("");
   const [previousImage, setPreviousImage] = useState("");
+  const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
@@ -45,6 +46,7 @@ const Home = () => {
   };
 
   const handleDelete = () => {
+    setIsScreenshotDeleted(true);
     setCurrentImage(previousImage);
     handleCloseWindow();
   };
@@ -57,18 +59,20 @@ const Home = () => {
         // console.log(imageData);
         setCurrentImage(imageData);
         setTimeout(async () => {
-          handleCloseWindow();
           setPreviousImage(imageData);
-          try {
-            //add data to firebase cloud
-            await addDoc(collection(db, "user-record"), {
-              id: 1,
-              time: new Date(),
-              img: imageData,
-            });
-          } catch (error) {
-            alert(error);
+          if (!isScreenshotDeleted) {
+            try {
+              //add data to firebase cloud
+              await addDoc(collection(db, "user-record"), {
+                id: 1,
+                time: new Date(),
+                img: imageData,
+              });
+            } catch (error) {
+              alert(error);
+            }
           }
+          handleCloseWindow();
         }, 5000);
       });
     }
@@ -78,6 +82,7 @@ const Home = () => {
     setShowScreenshotCapturedWindow(false);
     setScreenShotCapture(false);
     ScreenshotWindowRef?.current?.closeWindow();
+    setIsScreenshotDeleted(false);
   };
 
   return (
