@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
-import axios from "axios";
 import { useLocation } from "react-router";
 const ipcRenderer =
   typeof window.require === "function"
@@ -56,10 +55,7 @@ const Home = () => {
         setPreviousImage(imageData);
         if (!isScreenshotDeleted && navigator.onLine) {
           try {
-            const data = {
-              id: 618,
-              url: imageData,
-            };
+           
 
             // const response =await axios.post(
             //   `https://task-api.ensuesoft.com/api/tasktimetracker/url?taskId=${618}&url=jonojo`,

@@ -1,4 +1,4 @@
-import React, {
+import  {
   useEffect,
   useState,
   forwardRef,
@@ -7,7 +7,7 @@ import React, {
 import ReactDOM from "react-dom";
 import css from "./styles.js";
 const ScreenshotWindow = forwardRef(
-  ({ children, className = "root-portal", el = "div" }: any, ref) => {
+  ({ children= "root-portal", el = "div" }: any, ref) => {
     let externalWindow: Window | null = null;
     const [container] = useState(() => {
       // This will be executed only on the initial render
