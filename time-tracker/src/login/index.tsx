@@ -8,7 +8,7 @@ interface InputsType {
   email: string;
   password: string;
 }
-const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
+export const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
 
 export const Login = () => {
   const navigate = useNavigate();
