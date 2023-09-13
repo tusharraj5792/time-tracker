@@ -1,0 +1,19 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-size: 16px;
+  }
+  .main-container{
+      height: 600px;
+      width: 344px;
+      overflow: hidden;
+  }
+  .custom-borderRaduis{
+      border-radius: 10px;
+  }
+  .form-check-input:focus {
+      box-shadow: none;
+  }
