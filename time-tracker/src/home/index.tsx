@@ -1,10 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase/index";
 import { getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
-import { Login } from "../login";
 import axios from "axios";
 import { useLocation } from "react-router";
 const ipcRenderer =
@@ -21,18 +18,17 @@ const Home = () => {
   const [currentImage, setCurrentImage] = useState("");
   const [previousImage, setPreviousImage] = useState("");
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
-
-  const screenShotInterval: any = useRef(null);
-  const TimeInterval: any = useRef(null);
+  const screenshotCaptureInterval: any = useRef(null);
+  const timeChangeInterval: any = useRef(null);
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
-      TimeInterval.current = setInterval(() => {
+      timeChangeInterval.current = setInterval(() => {
         setSeconds((seconds) => seconds + 1);
         setTotalTime((seconds) => seconds + 1);
       }, 1000);
 
-      screenShotInterval.current = setInterval(() => {
+      screenshotCaptureInterval.current = setInterval(() => {
         secToMin(seconds);
         setTotalTime((totalT) => totalT);
         setShowScreenshotCapturedWindow(true);
@@ -40,10 +36,10 @@ const Home = () => {
       }, 15000);
     } else {
       setSeconds(0);
-      clearInterval(TimeInterval.current);
-      TimeInterval.current = null;
-      clearInterval(screenShotInterval.current);
-      screenShotInterval.current = null;
+      clearInterval(timeChangeInterval.current);
+      timeChangeInterval.current = null;
+      clearInterval(screenshotCaptureInterval.current);
+      screenshotCaptureInterval.current = null;
     }
   };
 
@@ -60,13 +56,6 @@ const Home = () => {
         setPreviousImage(imageData);
         if (!isScreenshotDeleted && navigator.onLine) {
           try {
-            //add data to firebase cloud
-            // await addDoc(collection(db, "user-record"), {
-            //   id: new Date().getTime().toString(),
-            //   time: new Date(),
-            //   img: imageData,
-            // });
-
             const data = {
               id: 618,
               url: imageData,
@@ -103,13 +92,13 @@ const Home = () => {
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
           const storedScreenshots: any = JSON.parse(local);
-          const ssData = storedScreenshots === null ? [] : storedScreenshots;
-          ssData.push({
+          const localStorageData = storedScreenshots === null ? [] : storedScreenshots;
+          localStorageData.push({
             id: 1,
             time: new Date(),
             img: imageData,
           });
-          localStorage.setItem("screenshotUrl", JSON.stringify(ssData));
+          localStorage.setItem("screenshotUrl", JSON.stringify(localStorageData));
         }
         handleCloseWindow();
       }, 5000);

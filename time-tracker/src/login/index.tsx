@@ -2,11 +2,13 @@ import "./login.css";
 import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { encryptData } from "../utils/utils";
 
 interface InputsType {
   email: string;
   password: string;
 }
+const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -21,12 +23,13 @@ export const Login = () => {
 
   const onSubmit: SubmitHandler<InputsType> = (data) => {
     axios
-      .post("https://task-api.ensuesoft.com/api/token", {
+      .post(`${rootUrl}/api/token`, {
         email: data.email,
         password: data.password,
       })
       .then((response) => {
         if (response.status === 200) {
+          encryptData("authToken",response.data.token)
           const data = response.data;
           navigate("/home", { state: data });
         } else {
@@ -66,6 +69,7 @@ export const Login = () => {
             <br />
             <input
               {...register("email")}
+              defaultValue={"abhishek.choudhary@ensuesoft.com"}
               type="email"
               id="userEmail"
               className="form-control shadow-none"
