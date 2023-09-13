@@ -5,7 +5,7 @@ interface props {
 }
 import "./screenshotCaptured.css";
 const ScreenshotCaptured = (props: props) => {
-  const style: any = { "--duration": 5 };
+  const style: any = { "--duration": 8 };
 
   return (
     <div className="d-flex align-items-center justify-content-center screenshot-main">

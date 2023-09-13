@@ -4,44 +4,46 @@ import { db } from "../firebase/index";
 import { getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
+import { Login } from "../login";
+import axios from "axios";
+import { useLocation } from "react-router";
 const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
     : false;
 const Home = () => {
+  const location=useLocation()
   const ScreenshotWindowRef = useRef<any>(null);
   const [seconds, setSeconds] = useState<number>(0);
-  const [screenShotCapture, setScreenShotCapture] = useState<boolean>(false);
   const [totalTime, setTotalTime] = useState<number>(0);
-  const [timeInterval, setTimeInterval] = useState<any>(null);
-  const [screenShotInterval, setScreenShotInterval] = useState<any>(null);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
     useState<boolean>(false);
   const [currentImage, setCurrentImage] = useState("");
   const [previousImage, setPreviousImage] = useState("");
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
 
+  const screenShotInterval: any = useRef(null);
+  const TimeInterval: any = useRef(null);
+
   const handleChange = (e: any) => {
     if (e.target.checked) {
-      setTimeInterval(
-        setInterval(() => {
-          setSeconds((seconds) => seconds + 1);
-        }, 1000)
-      );
-      setScreenShotInterval(
-        setInterval(() => {
-          console.log("test");
-          setScreenShotCapture(true);
-          secToMin(seconds);
-          setTotalTime((totalT) => totalT + 5);
-          setShowScreenshotCapturedWindow(true);
-        }, 10000)
-      );
+      TimeInterval.current = setInterval(() => {
+        setSeconds((seconds) => seconds + 1);
+        setTotalTime((seconds) => seconds + 1);
+      }, 1000);
+
+      screenShotInterval.current = setInterval(() => {
+        secToMin(seconds);
+        setTotalTime((totalT) => totalT);
+        setShowScreenshotCapturedWindow(true);
+        ipcRenderer.send("screenshot:capture", {});
+      }, 15000);
     } else {
       setSeconds(0);
-      clearInterval(timeInterval);
-      setScreenShotCapture(false);
-      clearInterval(screenShotInterval);
+      clearInterval(TimeInterval.current);
+      TimeInterval.current = null;
+      clearInterval(screenShotInterval.current);
+      screenShotInterval.current = null;
     }
   };
 
@@ -52,42 +54,89 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (screenShotCapture) {
-      // after every 10 minutes
-      ipcRenderer.send("screenshot:capture", {});
-      ipcRenderer.on("screenshot:captured", (_e: any, imageData: any) => {
-        // console.log(imageData);
-        setCurrentImage(imageData);
-        setTimeout(async () => {
-          setPreviousImage(imageData);
-          if (!isScreenshotDeleted) {
-            try {
-              //add data to firebase cloud
-              await addDoc(collection(db, "user-record"), {
-                id: 1,
-                time: new Date(),
-                img: imageData,
-              });
-            } catch (error) {
-              alert(error);
-            }
+    ipcRenderer.on("screenshot:captured", (_e: any, imageData: any) => {
+      setCurrentImage(imageData);
+      setTimeout(async () => {
+        setPreviousImage(imageData);
+        if (!isScreenshotDeleted && navigator.onLine) {
+          try {
+            //add data to firebase cloud
+            // await addDoc(collection(db, "user-record"), {
+            //   id: new Date().getTime().toString(),
+            //   time: new Date(),
+            //   img: imageData,
+            // });
+
+            const data = {
+              id: 618,
+              url: imageData,
+            };
+
+            // const response =await axios.post(
+            //   `https://task-api.ensuesoft.com/api/tasktimetracker/url?taskId=${618}&url=jonojo`,
+            //   null,
+            //   {
+            //     headers: {
+            //       authority: "task-api.ensuesoft.com",
+            //       accept: "text/plain",
+            //       "accept-language": "en-US,en;q=0.9",
+            //       authorization:
+            //         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYiLCJlbWFpbCI6InBvb2phLmthb25kYWxAZW5zdWVzb2Z0LmNvbSIsIm5iZiI6MTY5NDUyMDE0MywiZXhwIjoxNjk0NTY1NzQzLCJpYXQiOjE2OTQ1MjAxNDN9.HEUYB6Ql1dBgmTYzUKQNNwDa5Prxg8rB3LIrvXu9Ku4",
+            //       "content-length": "0",
+            //       origin: "https://task-api.ensuesoft.com",
+            //       referer: "https://task-api.ensuesoft.com/swagger/index.html",
+            //       "sec-ch-ua":
+            //         '"Chromium";v="116", "Not)A;Brand";v="24", "Google Chrome";v="116"',
+            //       "sec-ch-ua-mobile": "?0",
+            //       "sec-ch-ua-platform": '"Windows"',
+            //       "sec-fetch-dest": "empty",
+            //       "sec-fetch-mode": "cors",
+            //       "sec-fetch-site": "same-origin",
+            //       "user-agent":
+            //         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36",
+            //     },
+            //   }
+            // );
+          } catch (error) {
+            alert(error);
           }
-          handleCloseWindow();
-        }, 5000);
-      });
+        } else {
+          const local: any = localStorage.getItem("screenshotUrl");
+          const storedScreenshots: any = JSON.parse(local);
+          const ssData = storedScreenshots === null ? [] : storedScreenshots;
+          ssData.push({
+            id: 1,
+            time: new Date(),
+            img: imageData,
+          });
+          localStorage.setItem("screenshotUrl", JSON.stringify(ssData));
+        }
+        handleCloseWindow();
+      }, 5000);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (navigator.onLine) {
+      let localData: any = localStorage.getItem("screenshotUrl");
+      const getLocalData: any = JSON.parse(localData);
+      if (!getLocalData) {
+        console.log("no data ");
+      } else {
+        console.log("have data");
+      }
     }
-  }, [screenShotCapture, showScreenshotCapturedWindow]);
+  }, [navigator.onLine]);
 
   const handleCloseWindow = () => {
     setShowScreenshotCapturedWindow(false);
-    setScreenShotCapture(false);
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
   };
-
   return (
     <>
-      {showScreenshotCapturedWindow && (
+      {location.state?<>
+        {showScreenshotCapturedWindow && (
         <ScreenshotWindow ref={ScreenshotWindowRef}>
           <ScreenshotCaptured
             screenshotUrl={currentImage}
@@ -122,7 +171,7 @@ const Home = () => {
                   type="checkbox"
                   role="switch"
                   id="trackingToggle"
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
             </div>
@@ -167,12 +216,16 @@ const Home = () => {
           </div>
           <div className="trcking-foot border-top p-3">
             <div className="d-flex align-items-center justify-content-between">
-              <p className="mb-0">Navjot Kaur</p>
+              <p className="mb-0">{`${location.state.firstName} ${location.state.lastName}`}</p>
               <p className="mb-0">Messages</p>
             </div>
           </div>
         </div>
       </div>
+      
+      
+      </>:null}
+      
     </>
   );
 };
