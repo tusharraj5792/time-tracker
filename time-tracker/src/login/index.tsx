@@ -69,7 +69,6 @@ export const Login = () => {
             <br />
             <input
               {...register("email")}
-              defaultValue={"abhishek.choudhary@ensuesoft.com"}
               type="email"
               id="userEmail"
               className="form-control shadow-none"
