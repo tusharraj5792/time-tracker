@@ -8,6 +8,7 @@ const {
   Menu,
   Tray,
   desktopCapturer,
+  globalShortcut,
 } = require("electron");
 const isOnline = require("is-online");
 const path = require("path");
@@ -46,7 +47,7 @@ function createWindow() {
   }
   trayWin = win;
 
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   win.loadFile("index.html");
   win.loadURL(
@@ -75,7 +76,7 @@ function createWindow() {
         event.newGuest = new BrowserWindow(options);
         // event.newGuest.setContentProtection(true);
         event.newGuest.setSkipTaskbar(true);
-      }else if(frameName==="selectTaskWindow"){
+      } else if (frameName === "selectTaskWindow") {
         console.log(event);
         event.preventDefault();
         Object.assign(options, {
@@ -194,6 +195,11 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
+  });
+
+  app.on("browser-window-focus", function () {
+    globalShortcut.unregister("CommandOrControl+R");
+    globalShortcut.unregister("F5");
   });
 
   app.setLoginItemSettings({

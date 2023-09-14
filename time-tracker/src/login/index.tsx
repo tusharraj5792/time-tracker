@@ -4,50 +4,30 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { encryptData } from "../utils/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from "@react-oauth/google";
+import { ApiService } from "../utils/api.services";
 // import { ApiService } from "../utils/api.services"
 
 interface InputsType {
   email: string;
   password: string;
 }
-export const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
+export const rootUrl = import.meta.env.VITE_APP_BASE_API_URL;
 
-const responseMessage = (response:any) => {
-  // ApiService.postData('api/user/login-with-google',{idToken:response.credential});
-  console.log(response.credential);
-  axios
-      .post(`${rootUrl}/api/user/login-with-google`, {idToken:response.credential})
-      .then((response) => {
-        if (response.status === 200) {
-          encryptData("authToken",response.data.token)
-          const data = response.data;
-          debugger
-          // navigate("/home", { state: data });
-        } else {
-          // navigate(-1);
-          console.log("error")
-          debugger;
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  // dispatchLoginWithGoogle({ idToken: response.credential });
+const responseMessage = (response: any) => {
+  ApiService.postData('api/user/login-with-google',{idToken:response.credential});
+  
 };
-const errorMessage = (error:any) => {
+const errorMessage = (error: any) => {
   console.log(error);
 };
 
 export const Login = () => {
   const navigate = useNavigate();
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm<InputsType>();
+  const { register, handleSubmit } = useForm<InputsType>();
 
-  const onSubmit: SubmitHandler<InputsType> = (data) => {
+  const onSubmit: SubmitHandler<InputsType> = (data) => {    
     axios
       .post(`${rootUrl}/api/token`, {
         email: data.email,
@@ -55,9 +35,10 @@ export const Login = () => {
       })
       .then((response) => {
         if (response.status === 200) {
-          encryptData("authToken",response.data.token)
+          encryptData("userData",response.data)
+          encryptData("authToken", response.data.token);
           const data = response.data;
-          navigate("/home", { state: data });
+          navigate("/", { state: data });
         } else {
           navigate(-1);
         }
@@ -95,6 +76,7 @@ export const Login = () => {
             <br />
             <input
               {...register("email")}
+              defaultValue={"abhishek.choudhary@ensuesoft.com"}
               type="email"
               id="userEmail"
               className="form-control shadow-none"
@@ -115,6 +97,7 @@ export const Login = () => {
             </div>
             <input
               {...register("password")}
+              defaultValue={"Abhi@12345"}
               name="password"
               id="password"
               className="form-control shadow-none"
@@ -154,21 +137,21 @@ export const Login = () => {
             </a>
           </p>
         </div>
-         {/* Login with google */}
-         <div className="mt-3">
-            <GoogleOAuthProvider clientId="961644620937-07n0d959mcsm23rd92aga657stou7rp1.apps.googleusercontent.com">
-              <div className="flex justify-center">
-                <GoogleLogin
-                  theme="outline"
-                  type="icon"
-                  shape="square"
-                  // text="signin with google"
-                  onSuccess={responseMessage}
-                  onError={errorMessage}
-                />
-              </div>
-            </GoogleOAuthProvider>
-          </div>
+        {/* Login with google */}
+        <div className="mt-3">
+          <GoogleOAuthProvider clientId="961644620937-07n0d959mcsm23rd92aga657stou7rp1.apps.googleusercontent.com">
+            <div className="flex justify-center">
+              <GoogleLogin
+                theme="outline"
+                type="icon"
+                shape="square"
+                // text="signin with google"
+                onSuccess={responseMessage}
+                onError={() => errorMessage}
+              />
+            </div>
+          </GoogleOAuthProvider>
+        </div>
       </div>
     </div>
   );

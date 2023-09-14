@@ -1,17 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./home";
+import { Routes, Route } from "react-router-dom";
 import { Login } from "./login";
-import ProtectedRoutes from "./Routes/ProtectedRoute";
+import MainLayoutRoutes from "./Routes/MainLayout";
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<ProtectedRoutes />}>
-          <Route path="/home" element={<Home />} />
-        </Route>
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<MainLayoutRoutes />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
   );
 }
 

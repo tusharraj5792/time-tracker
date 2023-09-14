@@ -7,7 +7,6 @@ export const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
 export class ApiService {
     public static async postData(url: string, data: any): Promise<AxiosResponse> {
         return new Promise((resolve, reject) => {
-            debugger
             axios({
                 method: "post",
                 url: `${rootUrl}/${url}`,
