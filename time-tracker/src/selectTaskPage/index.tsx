@@ -2,19 +2,26 @@ import React from "react";
 
 export const SelectTaskPage = () => {
   return (
-    <div>
-      <span style={{ fontSize: "18px", padding: "18px" }}>
-        Please select project then task in project todo
-      </span>
-      <label htmlFor="project">Select Project</label>
-      <select id="project">
-        <option>all</option>
-      </select>
+    <div className="main-wrapper">
+      <div className="p-3">
+        <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
+          Please select project then task in project todo
+        </h6>
+        <div className="mb-3">
+          <label htmlFor="project" className="mb-1">Project</label>
+          <select className="form-control" id="project">
+            <option>all</option>
+          </select>
+        </div>
 
-      <label htmlFor="task">Select Task</label>
-      <select id="task">
-        <option>all</option>
-      </select>
+        <div>
+          <label htmlFor="task" className="mb-1">Task</label>
+          <select className="form-control" id="task">
+            <option>all</option>
+          </select>
+        </div>
+
+      </div>
     </div>
   );
 };
