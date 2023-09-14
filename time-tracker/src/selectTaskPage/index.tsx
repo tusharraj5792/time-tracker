@@ -5,6 +5,7 @@ import { decryptData } from "../utils/utils";
 export const SelectTaskPage = () => {
   const authToken = decryptData("authToken");
   const [projectData, setProjectData] = useState([]);
+  const [isDisable, setIsDisable] = useState<boolean>(true);
 
   const windnowObj: any = window;
   const fetchProject = async () => {
@@ -16,16 +17,46 @@ export const SelectTaskPage = () => {
     const data = await response.data.data;
     setProjectData(data);
   };
+
+  // const fetchUserTask = async () => {
+  //   const payload: any = {
+  //     ProjectId: windnowObj.selectedProject.id,
+  //     IsActive: true,
+  //   };
+  //   const response = await axios.post(
+  //     `${rootUrl}/api/task/board-tasks?ProjectId=${windnowObj.selectedProject.id}&IsActive=true`,
+  //     payload,
+  //     {
+  //       headers: {
+  //         authorization: `Bearer ${authToken}`,
+  //       },
+  //     }
+  //   );
+  //   const data = await response.data.data;
+  //   console.log(data);
+    
+  // };
   const handleChange = (e: any) => {
     const id = e.target.value;
+    if (id) {
+      setIsDisable(false);
+    } else {
+      setIsDisable(true);
+    }
     const projectName =
       e.target.selectedOptions[0].getAttribute("data-project-name");
     windnowObj.selectedProject = { id: id, name: projectName };
+    console.log(windnowObj.selectedProject);
   };
 
   useEffect(() => {
     fetchProject();
   }, []);
+  // useEffect(() => {
+  //   if (windnowObj.selectedProject.id) {
+  //     fetchUserTask();
+  //   }
+  // }, [windnowObj.selectedProject.id]);
   return (
     <div className="main-wrapper">
       <div className="p-3">
@@ -53,7 +84,7 @@ export const SelectTaskPage = () => {
           <label htmlFor="task" className="mb-1">
             Task
           </label>
-          <select className="form-control" id="task" disabled>
+          <select className="form-control" id="task" disabled={isDisable}>
             <option>all</option>
           </select>
         </div>
