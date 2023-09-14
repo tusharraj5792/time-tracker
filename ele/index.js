@@ -75,6 +75,25 @@ function createWindow() {
         event.newGuest = new BrowserWindow(options);
         // event.newGuest.setContentProtection(true);
         event.newGuest.setSkipTaskbar(true);
+      }else if(frameName==="selectTaskWindow"){
+        console.log(event);
+        event.preventDefault();
+        Object.assign(options, {
+          frame: false,
+          transparent: false,
+          webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+            nativeWindowOpen: true,
+          },
+          alwaysOnTop: true,
+          minimizable: false,
+          resizable: false,
+        });
+        event.newGuest = new BrowserWindow(options);
+        // event.newGuest.setContentProtection(true);
+        event.newGuest.setSkipTaskbar(true);
       }
     }
   );

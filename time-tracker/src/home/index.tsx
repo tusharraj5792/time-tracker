@@ -5,6 +5,8 @@ import ScreenshotCaptured from "../screenshotCaptured";
 import { useLocation } from "react-router";
 import axios from "axios";
 import { rootUrl } from "../login";
+import SelectTaskWindow from "../selectTaskWindow";
+import { SelectTaskPage } from "../selectTaskPage";
 const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
@@ -12,6 +14,8 @@ const ipcRenderer =
 const Home = () => {
   const location = useLocation();
   const ScreenshotWindowRef = useRef<any>(null);
+  const SelectTaskWindowRef = useRef<any>(null);
+
   const [seconds, setSeconds] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
@@ -81,16 +85,12 @@ const Home = () => {
               id: 618,
               taskTimeTrackerUrl: formData,
             };
-            await axios.post(
-              `${rootUrl}/api/tasktimetracker/url?taskId=${618}&url=${formData}`,
-              data,
-              {
-                headers: {
-                  authorization: `Bearer ${location.state.token}`,
-                  "content-length": "0",
-                },
-              }
-            );
+            await axios.post(`${rootUrl}/api/tasktimetracker/url`, data, {
+              headers: {
+                authorization: `Bearer ${location.state.token}`,
+                "content-length": "0",
+              },
+            });
           } catch (error) {
             alert(error);
           }
@@ -131,6 +131,9 @@ const Home = () => {
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
   };
+  const handleCloseSelectTaskWindow = () => {
+    SelectTaskWindowRef?.current?.closeWindow();
+  };
   return (
     <>
       {location.state ? (
@@ -144,6 +147,9 @@ const Home = () => {
               />
             </ScreenshotWindow>
           )}
+          <SelectTaskWindow ref={SelectTaskWindowRef}>
+            <SelectTaskPage />
+          </SelectTaskWindow>
           <div className="d-flex align-items-center justify-content-center main-wrapper">
             <div className="tracker-main">
               <div className="trcking-head border-bottom">
