@@ -14,18 +14,30 @@ interface InputsType {
 }
 export const rootUrl = import.meta.env.VITE_APP_BASE_API_URL;
 
-const responseMessage = (response: any) => {
-  ApiService.postData('api/user/login-with-google',{idToken:response.credential});
-  
-};
-const errorMessage = (error: any) => {
-  console.log(error);
-};
+
 
 export const Login = () => {
   const navigate = useNavigate();
-
   const { register, handleSubmit } = useForm<InputsType>();
+
+  const redirectAfterLogin = (response:any)=>{
+    if (response.status === 200) {
+      encryptData("userData",response.data)
+      encryptData("authToken", response.data.token);
+      const data = response.data;
+      navigate("/", { state: data });
+    } else {
+      navigate(-1);
+    }
+  }
+
+  const responseMessage = async (response: any) => {
+    const resp = await ApiService.postData('api/user/login-with-google',{idToken:response.credential});
+    redirectAfterLogin(resp);    
+  };
+  const errorMessage = (error: any) => {
+    console.log(error);
+  };
 
   const onSubmit: SubmitHandler<InputsType> = (data) => {    
     axios
@@ -34,14 +46,7 @@ export const Login = () => {
         password: data.password,
       })
       .then((response) => {
-        if (response.status === 200) {
-          encryptData("userData",response.data)
-          encryptData("authToken", response.data.token);
-          const data = response.data;
-          navigate("/", { state: data });
-        } else {
-          navigate(-1);
-        }
+        redirectAfterLogin(response);
       })
       .catch((e) => {
         console.log(e);
@@ -126,9 +131,20 @@ export const Login = () => {
             </button>
           </div>
         </form>
-        {/* <!-- Google icon here --> */}
-        {/* <i className="fa-brands fa-google"></i>  */}
-
+        {/* Login with google */}
+        <div className="mt-3 d-flex justify-content-center">
+          <GoogleOAuthProvider clientId="961644620937-07n0d959mcsm23rd92aga657stou7rp1.apps.googleusercontent.com">
+            <div className="flex justify-center">
+              <GoogleLogin
+                theme="outline"
+                type="icon"
+                shape="square"
+                onSuccess={responseMessage}
+                onError={() =>errorMessage}
+              />
+            </div>
+          </GoogleOAuthProvider>
+        </div>
         <div className="text-center text-secondary mt-3">
           <p className="mb-0 text-">
             Doesn't have an account?
@@ -137,21 +153,7 @@ export const Login = () => {
             </a>
           </p>
         </div>
-        {/* Login with google */}
-        <div className="mt-3">
-          <GoogleOAuthProvider clientId="961644620937-07n0d959mcsm23rd92aga657stou7rp1.apps.googleusercontent.com">
-            <div className="flex justify-center">
-              <GoogleLogin
-                theme="outline"
-                type="icon"
-                shape="square"
-                // text="signin with google"
-                onSuccess={responseMessage}
-                onError={() => errorMessage}
-              />
-            </div>
-          </GoogleOAuthProvider>
-        </div>
+        
       </div>
     </div>
   );
