@@ -51,7 +51,7 @@ const Home = () => {
   };
 
   function dataURLtoFile(dataurl: any, filename: string) {
-    var arr = dataurl.split(","),
+    let arr = dataurl.split(","),
       mime = arr[0].match(/:(.*?);/)[1],
       bstr = atob(arr[arr.length - 1]),
       n = bstr.length,
@@ -64,7 +64,7 @@ const Home = () => {
 
   useEffect(() => {
     ipcRenderer.on("screenshot:captured", (_e: any, imageData: any) => {
-      let file = dataURLtoFile(
+      const file = dataURLtoFile(
         imageData,
         `${new Date().toLocaleString()}_screenshot.png`
       );
