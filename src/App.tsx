@@ -1,12 +1,18 @@
 import { Routes, Route } from "react-router-dom";
 import { Login } from "./login";
 import MainLayoutRoutes from "./Routes/MainLayout";
+import CustomFrame from "./components/CustomFrame";
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainLayoutRoutes />} />
-      <Route path="/login" element={<Login />} />
-    </Routes>
+    <>
+      <CustomFrame />
+      <div id="main-container">
+        <Routes>
+          <Route path="/" element={<MainLayoutRoutes />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 
