@@ -1,13 +1,40 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { rootUrl } from "../login";
 import { decryptData } from "../utils/utils";
-export const SelectTaskPage = () => {
-  const authToken = decryptData("authToken");
-  const [projectData, setProjectData] = useState([]);
-  const [isDisable, setIsDisable] = useState<boolean>(true);
 
-  const windnowObj: any = window;
+interface taskType {
+  assignedTo: number;
+  id: number;
+  title: string;
+}
+interface propsType {
+  isProjectSelected?: boolean;
+  projectId?: number;
+  setProjectData: (id: any) => void;
+  projectData: any;
+  handleSelectProject: (id: number) => void;
+  handleSelectTask: (taskName: string) => void;
+}
+export const SelectTaskPage = ({
+  projectId,
+  isProjectSelected,
+  projectData,
+  setProjectData,
+  handleSelectProject,
+  handleSelectTask,
+}: propsType) => {
+  const authToken = decryptData("authToken");
+  const [allTask, setAllTask] = useState<
+    Array<{
+      assignedTo: number;
+      id: number;
+      title: string;
+    }>
+  >([]);
+
+ 
+
   const fetchProject = async () => {
     const response = await axios.get(`${rootUrl}/api/projects`, {
       headers: {
@@ -18,55 +45,86 @@ export const SelectTaskPage = () => {
     setProjectData(data);
   };
 
-  const handleChange = (e: any) => {
-    const id = e.target.value;
-    if (id) {
-      setIsDisable(false);
-    } else {
-      setIsDisable(true);
-    }
-    const projectName =
-      e.target.selectedOptions[0].getAttribute("data-project-name");
-    windnowObj.selectedProject = { id: id, name: projectName };
-    console.log(windnowObj.selectedProject);
+  const fetchUserTask = async () => {
+    const response = await axios.get(
+      `${rootUrl}/api/task/board-tasks?ProjectId=${projectId}&IsActive=true`,
+      {
+        headers: {
+          authorization: `Bearer ${authToken}`,
+          Projectid: projectId,
+        },
+      }
+    );
+    const data = await response.data.data;
+    setAllTask(data);
   };
 
   useEffect(() => {
     fetchProject();
   }, []);
 
+  useEffect(() => {
+    if (projectId) {
+      fetchUserTask();
+    }
+  }, [projectId]);
+
+  const userData = decryptData("userData");
+
   return (
     <div className="main-wrapper">
-      <div className="p-3">
-        <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
-          Please select project then task in project todo
-        </h6>
-        <div className="mb-3">
-          <label htmlFor="project" className="mb-1">
-            Project
-          </label>
-          <select className="form-control" id="project" onChange={handleChange}>
-            <option value={""}>Select Project</option>
-            {projectData &&
-              projectData.map((data: any) => {
-                return (
-                  <option value={data.id} data-project-name={data.name}>
-                    {data.name}
-                  </option>
-                );
-              })}
-          </select>
+      {isProjectSelected ? (
+        <>
+          <div className="p-3">
+            <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
+              Please select task
+            </h6>
+            <div className="mb-3 max-ul-h">
+              <ul className="list-group">
+                {allTask &&
+                  allTask.length &&
+                  allTask
+                    .filter((task: taskType) => task.assignedTo === userData.id)
+                    .map((task: taskType) => {
+                      return (
+                        <li
+                          className="list-group-item p-2"
+                          key={task.id}
+                          onClick={() => {
+                            handleSelectTask(task.title);
+                          }}
+                        >
+                          {task.title}
+                        </li>
+                      );
+                    })}
+              </ul>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="p-3">
+          <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
+            Please select project
+          </h6>
+          <div className="mb-3 max-ul-h">
+            <ul className="list-group">
+              {projectData &&
+                projectData.map((data: any) => {
+                  return (
+                    <li
+                      className="list-group-item p-2"
+                      key={data.id}
+                      onClick={() => handleSelectProject(data.id)}
+                    >
+                      {data.name}
+                    </li>
+                  );
+                })}
+            </ul>
+          </div>
         </div>
-
-        <div>
-          <label htmlFor="task" className="mb-1">
-            Task
-          </label>
-          <select className="form-control" id="task" disabled={isDisable}>
-            <option>all</option>
-          </select>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

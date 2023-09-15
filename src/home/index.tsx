@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { decryptData, getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
+import SelectTaskWindow from "../selectTaskWindow";
+import { SelectTaskPage } from "../selectTaskPage";
 import { ApiService } from "../utils/api.services";
 const ipcRenderer =
   typeof window.require === "function"
@@ -9,6 +11,7 @@ const ipcRenderer =
     : false;
 const Home = () => {
   const ScreenshotWindowRef = useRef<any>(null);  
+  const SelectTaskWindowRef = useRef<any>(null);  
   const [seconds, setSeconds] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
@@ -18,9 +21,56 @@ const Home = () => {
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
   const screenshotCaptureInterval: any = useRef(null);
   const timeChangeInterval: any = useRef(null);
+  const [projectData, setProjectData] = useState([]);
+  const [isProjectSelected, setIsProjectSelected] = useState<boolean>(false);
+  const [projectId, setProjectId] = useState<any>();
+  const [projectDetails, setProjectDetails] = useState<{
+    projectName: string;
+    id: number;
+  }>();
+  const [showSelectTaskWindow, setShowSelectTaskWindow] = useState<boolean>(false);
+  const [taskDetails, setTaskDetails] = useState<string>();
+
+  const handleCloseSelectTaskWindow = () => {
+    SelectTaskWindowRef?.current?.closeWindow();
+  };
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
+      setShowSelectTaskWindow(true);
+    } else {
+      setShowSelectTaskWindow(false);
+      setSeconds(0);
+      clearInterval(timeChangeInterval.current);
+      timeChangeInterval.current = null;
+      clearInterval(screenshotCaptureInterval.current);
+      screenshotCaptureInterval.current = null;
+      handleCloseSelectTaskWindow();
+    }
+  };
+
+  const handleDelete = () => {
+    setIsScreenshotDeleted(true);
+    setCurrentImage(previousImage);
+    handleCloseWindow();
+  };
+
+  const handleSelectProject = (id: number) => {
+    const projectName: any = projectData.find(
+      (project: any) => project.id === id
+    );
+
+    if (id) {
+      setIsProjectSelected(true);
+      setProjectId(id);
+      setProjectDetails({ projectName: projectName.name, id: id });
+    }
+  };
+
+  const handleSelectTask = (taskName: string) => {
+    if (taskName) {
+      setTaskDetails(taskName);
+      handleCloseSelectTaskWindow();
       timeChangeInterval.current = setInterval(() => {
         setSeconds((seconds) => seconds + 1);
         setTotalTime((seconds) => seconds + 1);
@@ -32,19 +82,7 @@ const Home = () => {
         setShowScreenshotCapturedWindow(true);
         ipcRenderer.send("screenshot:capture", {});
       }, 15000);
-    } else {
-      setSeconds(0);
-      clearInterval(timeChangeInterval.current);
-      timeChangeInterval.current = null;
-      clearInterval(screenshotCaptureInterval.current);
-      screenshotCaptureInterval.current = null;
     }
-  };
-
-  const handleDelete = () => {
-    setIsScreenshotDeleted(true);
-    setCurrentImage(previousImage);
-    handleCloseWindow();
   };
 
   function dataURLtoFile(dataurl: any, filename: string) {
@@ -67,8 +105,6 @@ const Home = () => {
       );
       let formData = new FormData();
       formData.append("file", file);
-      // console.log(formData.getAll("file"));
-
       setCurrentImage(imageData);
       setTimeout(async () => {
         setPreviousImage(imageData);
@@ -114,7 +150,7 @@ const Home = () => {
     setShowScreenshotCapturedWindow(false);
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
-  }  
+  };  
 
   const userData = decryptData("userData");
 
@@ -129,18 +165,32 @@ const Home = () => {
           />
         </ScreenshotWindow>
       )}
-      {/* <SelectTaskWindow ref={SelectTaskWindowRef}>
-        <SelectTaskPage />
-      </SelectTaskWindow> */}
+      {showSelectTaskWindow ? (
+        <SelectTaskWindow ref={SelectTaskWindowRef}>
+          <SelectTaskPage
+            isProjectSelected={isProjectSelected}
+            projectId={projectId}
+            setProjectData={setProjectData}
+            handleSelectProject={handleSelectProject}
+            projectData={projectData}
+            handleSelectTask={handleSelectTask}
+          />
+        </SelectTaskWindow>
+      ) : null}
+
       <div className="d-flex align-items-center justify-content-center main-wrapper">
         <div className="tracker-main">
           <div className="trcking-head border-bottom">
             <div className="p-3">
               <div>
                 <h2 className="fw-bold">
-                  Convert Figma to React for Provider Dashboard
+                  {projectDetails
+                    ? projectDetails.projectName
+                    : "Please select the project name"}
                 </h2>
-                <p className="mb-0">Girish Subramanyan - Indigo Health Inc</p>
+                <p className="mb-0">
+                  {taskDetails ? taskDetails : "Please select task"}
+                </p>
               </div>
             </div>
           </div>
