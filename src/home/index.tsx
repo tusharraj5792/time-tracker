@@ -24,6 +24,13 @@ const Home = () => {
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
   const screenshotCaptureInterval: any = useRef(null);
   const timeChangeInterval: any = useRef(null);
+  const [projectData, setProjectData] = useState([]);
+  const [isProjectSelected, setIsProjectSelected] = useState<boolean>(false);
+  const [projectId, setProjectId] = useState<any>();
+  const [projectDetails, setProjectDetails] = useState<{
+    projectName: string;
+    id: number;
+  }>();
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
@@ -51,6 +58,18 @@ const Home = () => {
     setIsScreenshotDeleted(true);
     setCurrentImage(previousImage);
     handleCloseWindow();
+  };
+
+  const handleClick = (id: number) => {
+    const projectName: any = projectData.find(
+      (project: any) => project.id === id
+    );
+
+    if (id) {
+      setIsProjectSelected(true);
+      setProjectId(id);
+      setProjectDetails({ projectName: projectName.name, id: id });
+    }
   };
 
   function dataURLtoFile(dataurl: any, filename: string) {
@@ -83,10 +102,7 @@ const Home = () => {
             id: 618,
             taskTimeTrackerUrl: formData,
           };
-          await ApiService.postData(
-            "api/tasktimetracker/url",
-            data,
-          );
+          await ApiService.postData("api/tasktimetracker/url", data);
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
           const storedScreenshots: any = JSON.parse(local);
@@ -141,9 +157,15 @@ const Home = () => {
           />
         </ScreenshotWindow>
       )}
-      {/* <SelectTaskWindow ref={SelectTaskWindowRef}>
-        <SelectTaskPage />
-      </SelectTaskWindow> */}
+      <SelectTaskWindow ref={SelectTaskWindowRef}>
+        <SelectTaskPage
+          isProjectSelected={isProjectSelected}
+          projectId={projectId}
+          setProjectData={setProjectData}
+          handleClick={handleClick}
+          projectData={projectData}
+        />
+      </SelectTaskWindow>
       <div className="d-flex align-items-center justify-content-center main-wrapper">
         <div className="tracker-main">
           <div className="trcking-head border-bottom">
