@@ -47,11 +47,8 @@ function createWindow() {
   }
   trayWin = win;
 
-  win.webContents.openDevTools();
-
   win.loadFile("index.html");
   win.loadURL(
-    // "https://room.intajy.com/"
     "http://localhost:3000/"
   );
 
