@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { rootUrl } from "../login";
 import { decryptData } from "../utils/utils";
+import { Loader } from "../components/CustomFrame/loader";
 
 interface taskType {
   assignedTo: number;
@@ -32,8 +33,7 @@ export const SelectTaskPage = ({
       title: string;
     }>
   >([]);
-
- 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const fetchProject = async () => {
     const response = await axios.get(`${rootUrl}/api/projects`, {
@@ -42,10 +42,14 @@ export const SelectTaskPage = ({
       },
     });
     const data = await response.data.data;
+    if (data) {
+      setIsLoading(false);
+    }
     setProjectData(data);
   };
 
   const fetchUserTask = async () => {
+    setIsLoading(true)
     const response = await axios.get(
       `${rootUrl}/api/task/board-tasks?ProjectId=${projectId}&IsActive=true`,
       {
@@ -56,9 +60,11 @@ export const SelectTaskPage = ({
       }
     );
     const data = await response.data.data;
+    if (data) {
+      setIsLoading(false);
+    }
     setAllTask(data);
   };
-
   useEffect(() => {
     fetchProject();
   }, []);
@@ -80,25 +86,31 @@ export const SelectTaskPage = ({
               Please select task
             </h6>
             <div className="mb-3 max-ul-h">
-              <ul className="list-group">
-                {allTask &&
-                  allTask.length &&
-                  allTask
-                    .filter((task: taskType) => task.assignedTo === userData.id)
-                    .map((task: taskType) => {
-                      return (
-                        <li
-                          className="list-group-item p-2"
-                          key={task.id}
-                          onClick={() => {
-                            handleSelectTask(task.title);
-                          }}
-                        >
-                          {task.title}
-                        </li>
-                      );
-                    })}
-              </ul>
+              {isLoading ? (
+                <Loader />
+              ) : (
+                <ul className="list-group">
+                  {allTask &&
+                    allTask.length &&
+                    allTask
+                      .filter(
+                        (task: taskType) => task.assignedTo === userData.id
+                      )
+                      .map((task: taskType) => {
+                        return (
+                          <li
+                            className="list-group-item p-2"
+                            key={task.id}
+                            onClick={() => {
+                              handleSelectTask(task.title);
+                            }}
+                          >
+                            {task.title}
+                          </li>
+                        );
+                      })}
+                </ul>
+              )}
             </div>
           </div>
         </>
@@ -108,20 +120,24 @@ export const SelectTaskPage = ({
             Please select project
           </h6>
           <div className="mb-3 max-ul-h">
-            <ul className="list-group">
-              {projectData &&
-                projectData.map((data: any) => {
-                  return (
-                    <li
-                      className="list-group-item p-2"
-                      key={data.id}
-                      onClick={() => handleSelectProject(data.id)}
-                    >
-                      {data.name}
-                    </li>
-                  );
-                })}
-            </ul>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <ul className="list-group">
+                {projectData &&
+                  projectData.map((data: any) => {
+                    return (
+                      <li
+                        className="list-group-item p-2"
+                        key={data.id}
+                        onClick={() => handleSelectProject(data.id)}
+                      >
+                        {data.name}
+                      </li>
+                    );
+                  })}
+              </ul>
+            )}
           </div>
         </div>
       )}

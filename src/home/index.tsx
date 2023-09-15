@@ -10,8 +10,8 @@ const ipcRenderer =
     ? window.require("electron").ipcRenderer
     : false;
 const Home = () => {
-  const ScreenshotWindowRef = useRef<any>(null);  
-  const SelectTaskWindowRef = useRef<any>(null);  
+  const ScreenshotWindowRef = useRef<any>(null);
+  const SelectTaskWindowRef = useRef<any>(null);
   const [seconds, setSeconds] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
@@ -27,9 +27,10 @@ const Home = () => {
   const [projectDetails, setProjectDetails] = useState<{
     projectName: string;
     id: number;
-  }>();
-  const [showSelectTaskWindow, setShowSelectTaskWindow] = useState<boolean>(false);
-  const [taskDetails, setTaskDetails] = useState<string>();
+  }>({ projectName: "", id: 0 });
+  const [showSelectTaskWindow, setShowSelectTaskWindow] =
+    useState<boolean>(false);
+  const [taskDetails, setTaskDetails] = useState<string>("");
 
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
@@ -45,6 +46,9 @@ const Home = () => {
       timeChangeInterval.current = null;
       clearInterval(screenshotCaptureInterval.current);
       screenshotCaptureInterval.current = null;
+      setProjectDetails({ projectName: "", id: 0 });
+      setTaskDetails("");
+      setIsProjectSelected(false);
       handleCloseSelectTaskWindow();
     }
   };
@@ -150,7 +154,7 @@ const Home = () => {
     setShowScreenshotCapturedWindow(false);
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
-  };  
+  };
 
   const userData = decryptData("userData");
 
@@ -184,12 +188,15 @@ const Home = () => {
             <div className="p-3">
               <div>
                 <h2 className="fw-bold">
-                  {projectDetails
+                  {Object.keys(projectDetails).length &&
+                  projectDetails?.projectName !== ""
                     ? projectDetails.projectName
                     : "Please select the project name"}
                 </h2>
                 <p className="mb-0">
-                  {taskDetails ? taskDetails : "Please select task"}
+                  {projectDetails && taskDetails
+                    ? taskDetails
+                    : "Please select task"}
                 </p>
               </div>
             </div>
