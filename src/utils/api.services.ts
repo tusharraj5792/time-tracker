@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios"
+import axios from "axios"
 // import { getItem } from "./utils";
 // import store from "../store/store"
 // import { LoginActions } from "src/store/login/actions";

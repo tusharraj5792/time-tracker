@@ -37,9 +37,8 @@ export const Login = () => {
   const errorMessage = (error: any) => {
     console.log(error);
   };
-{}
   const onSubmit: SubmitHandler<InputsType> =async (data) => {  
-    const response=await ApiService.postData("api/token",data).then((response) => {
+    await ApiService.postData("api/token",data).then((response) => {
           redirectAfterLogin(response);
         })
         .catch((e) => {

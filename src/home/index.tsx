@@ -2,19 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import { decryptData, getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
-
-import axios from "axios";
-import { rootUrl } from "../login";
-import SelectTaskWindow from "../selectTaskWindow";
-import { SelectTaskPage } from "../selectTaskPage";
 import { ApiService } from "../utils/api.services";
 const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
     : false;
 const Home = () => {
-  const ScreenshotWindowRef = useRef<any>(null);
-  const SelectTaskWindowRef = useRef<any>(null);
+  const ScreenshotWindowRef = useRef<any>(null);  
   const [seconds, setSeconds] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
@@ -83,10 +77,7 @@ const Home = () => {
             id: 618,
             taskTimeTrackerUrl: formData,
           };
-          await ApiService.postData(
-            "api/tasktimetracker/url",
-            data,
-          );
+          await ApiService.postData("api/tasktimetracker/url", data);
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
           const storedScreenshots: any = JSON.parse(local);
@@ -123,10 +114,7 @@ const Home = () => {
     setShowScreenshotCapturedWindow(false);
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
-  };
-  const handleCloseSelectTaskWindow = () => {
-    SelectTaskWindowRef?.current?.closeWindow();
-  };
+  }  
 
   const userData = decryptData("userData");
 
