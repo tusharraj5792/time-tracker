@@ -17,6 +17,7 @@ let tray, trayWin, newWinWidth, userIdleTime;
 function createWindow() {
   const win = new BrowserWindow({
     center: true,
+    frame: false,
     transparent: true,
     width: 350,
     height: 630,
@@ -27,6 +28,7 @@ function createWindow() {
       nativeWindowOpen: true,
     },
     autoHideMenuBar: true,
+    resizable:false
   });
 
   let isSingleInstance = app.requestSingleInstanceLock();
@@ -48,9 +50,7 @@ function createWindow() {
   trayWin = win;
 
   win.loadFile("index.html");
-  win.loadURL(
-    "http://localhost:3000/"
-  );
+  win.loadURL("http://localhost:3000/");
 
   win.webContents.on(
     "new-window",
@@ -130,6 +130,12 @@ function createWindow() {
         let image = sources[0].thumbnail.toDataURL();
         win.webContents.send("screenshot:captured", image);
       });
+  });
+  ipcMain.on("minimizeWindow", (e, value) => {
+    win.minimize();
+  });
+  ipcMain.on("closeWindow", (e, value) => {
+    app.quit();
   });
 }
 
