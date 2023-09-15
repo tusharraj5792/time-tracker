@@ -99,14 +99,14 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
             <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
               Please select task
             </h6>
-            <div className="mb-3">
-              <ul>
+            <div className="mb-3 max-ul-h">
+              <ul className="list-group">
                 {allTask &&
                   allTask.length &&
                   allTask
                     .filter((task: taskType) => task.assignedTo === userData.id)
                     .map((task: taskType) => {
-                      return <li key={task.id}>{task.title}</li>;
+                      return <li className="list-group-item p-2" key={task.id}>{task.title}</li>;
                     })}
               </ul>
             </div>
@@ -117,12 +117,12 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
           <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
             Please select project
           </h6>
-          <div className="mb-3">
-            <ul>
+          <div className="mb-3 max-ul-h">
+            <ul className="list-group">
               {projectData &&
                 projectData.map((data: any) => {
                   return (
-                    <li key={data.id} onClick={() => handleClick(data.id)}>
+                    <li className="list-group-item p-2" key={data.id} onClick={() => handleClick(data.id)}>
                       {data.name}
                     </li>
                   );

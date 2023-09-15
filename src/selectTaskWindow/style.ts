@@ -20,6 +20,36 @@ css = `
 .main-wrapper h6 {
   color: #f24759;
 }
+
+.max-ul-h {
+  max-height: 150px;
+  overflow: auto;
+}
+
+.max-ul-h li:hover {
+  background-color: #f24759;
+  cursor: pointer;
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
   `;
 
 export default css;
