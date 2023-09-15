@@ -28,8 +28,9 @@ interface propsType{
   setProjectData:(id:any)=>void
   projectData:any
   handleClick:(id:number)=>void
+  handleTaskClick:(taskName:string)=>void
 }
-export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProjectData ,handleClick}:propsType) => {
+export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProjectData ,handleClick,handleTaskClick}:propsType) => {
   const authToken = decryptData("authToken");
   const [allTask, setAllTask] = useState<
     Array<{
@@ -106,7 +107,7 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
                   allTask
                     .filter((task: taskType) => task.assignedTo === userData.id)
                     .map((task: taskType) => {
-                      return <li className="list-group-item p-2" key={task.id}>{task.title}</li>;
+                      return <li className="list-group-item p-2" key={task.id} onClick={()=>{handleTaskClick(task.title)}}>{task.title}</li>;
                     })}
               </ul>
             </div>

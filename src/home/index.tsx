@@ -2,9 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { decryptData, getDay, secToMin } from "../utils/utils";
 import ScreenshotWindow from "../screenshotWindow";
 import ScreenshotCaptured from "../screenshotCaptured";
-
-import axios from "axios";
-import { rootUrl } from "../login";
 import SelectTaskWindow from "../selectTaskWindow";
 import { SelectTaskPage } from "../selectTaskPage";
 import { ApiService } from "../utils/api.services";
@@ -31,26 +28,24 @@ const Home = () => {
     projectName: string;
     id: number;
   }>();
+  const [isSelectTaskWindow, setIsSelectTaskWindow] = useState<boolean>(false);
+  const [taskDetails, setTaskDetails] = useState<string>();
+
+  const handleCloseSelectTaskWindow = () => {
+    SelectTaskWindowRef?.current?.closeWindow();
+  };
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
-      timeChangeInterval.current = setInterval(() => {
-        setSeconds((seconds) => seconds + 1);
-        setTotalTime((seconds) => seconds + 1);
-      }, 1000);
-
-      screenshotCaptureInterval.current = setInterval(() => {
-        secToMin(seconds);
-        setTotalTime((totalT) => totalT);
-        setShowScreenshotCapturedWindow(true);
-        ipcRenderer.send("screenshot:capture", {});
-      }, 15000);
+      setIsSelectTaskWindow(true);
     } else {
+      setIsSelectTaskWindow(false);
       setSeconds(0);
       clearInterval(timeChangeInterval.current);
       timeChangeInterval.current = null;
       clearInterval(screenshotCaptureInterval.current);
       screenshotCaptureInterval.current = null;
+      handleCloseSelectTaskWindow();
     }
   };
 
@@ -69,6 +64,24 @@ const Home = () => {
       setIsProjectSelected(true);
       setProjectId(id);
       setProjectDetails({ projectName: projectName.name, id: id });
+    }
+  };
+
+  const handleTaskClick = (taskName: string) => {
+    if (taskName) {
+      setTaskDetails(taskName);
+      handleCloseSelectTaskWindow();
+      timeChangeInterval.current = setInterval(() => {
+        setSeconds((seconds) => seconds + 1);
+        setTotalTime((seconds) => seconds + 1);
+      }, 1000);
+
+      screenshotCaptureInterval.current = setInterval(() => {
+        secToMin(seconds);
+        setTotalTime((totalT) => totalT);
+        setShowScreenshotCapturedWindow(true);
+        ipcRenderer.send("screenshot:capture", {});
+      }, 15000);
     }
   };
 
@@ -92,8 +105,6 @@ const Home = () => {
       );
       let formData = new FormData();
       formData.append("file", file);
-      // console.log(formData.getAll("file"));
-
       setCurrentImage(imageData);
       setTimeout(async () => {
         setPreviousImage(imageData);
@@ -140,9 +151,6 @@ const Home = () => {
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
   };
-  const handleCloseSelectTaskWindow = () => {
-    SelectTaskWindowRef?.current?.closeWindow();
-  };
 
   const userData = decryptData("userData");
 
@@ -157,24 +165,32 @@ const Home = () => {
           />
         </ScreenshotWindow>
       )}
-      <SelectTaskWindow ref={SelectTaskWindowRef}>
-        <SelectTaskPage
-          isProjectSelected={isProjectSelected}
-          projectId={projectId}
-          setProjectData={setProjectData}
-          handleClick={handleClick}
-          projectData={projectData}
-        />
-      </SelectTaskWindow>
+      {isSelectTaskWindow ? (
+        <SelectTaskWindow ref={SelectTaskWindowRef}>
+          <SelectTaskPage
+            isProjectSelected={isProjectSelected}
+            projectId={projectId}
+            setProjectData={setProjectData}
+            handleClick={handleClick}
+            projectData={projectData}
+            handleTaskClick={handleTaskClick}
+          />
+        </SelectTaskWindow>
+      ) : null}
+
       <div className="d-flex align-items-center justify-content-center main-wrapper">
         <div className="tracker-main">
           <div className="trcking-head border-bottom">
             <div className="p-3">
               <div>
                 <h2 className="fw-bold">
-                  Convert Figma to React for Provider Dashboard
+                  {projectDetails
+                    ? projectDetails.projectName
+                    : "Please select the project name"}
                 </h2>
-                <p className="mb-0">Girish Subramanyan - Indigo Health Inc</p>
+                <p className="mb-0">
+                  {taskDetails ? taskDetails : "Please select task"}
+                </p>
               </div>
             </div>
           </div>

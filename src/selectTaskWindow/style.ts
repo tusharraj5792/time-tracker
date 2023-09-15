@@ -27,9 +27,9 @@ css = `
 }
 
 .max-ul-h li:hover {
-  background-color: #f24759;
+  background-color: #F5F5F5;
   cursor: pointer;
-  color: #fff;
+  color: #F24759;
 }
 
 ::-webkit-scrollbar {
