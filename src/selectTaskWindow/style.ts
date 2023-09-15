@@ -22,7 +22,7 @@ css = `
 }
 
 .max-ul-h {
-  max-height: 150px;
+  max-height: 120px;
   overflow: auto;
 }
 

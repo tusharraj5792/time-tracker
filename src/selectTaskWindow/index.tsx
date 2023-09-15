@@ -28,7 +28,7 @@ import  {
         container.style.height = "100%";
         container.style.position = "relative";
   
-        let screenOptions = `left=750,top=0,width=550px,height=220px`;
+        let screenOptions = `left=750,top=0,width=550px,height=180px`;
         externalWindow = window.open("", `selectTaskWindow`, screenOptions);
         if (externalWindow) {
           externalWindow.document.write("<html>");
