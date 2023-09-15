@@ -5,55 +5,36 @@ import { decryptData } from "../utils/utils";
 
 interface taskType {
   assignedTo: number;
-  assigneeName: string;
-  createdBy: number;
-  description: string;
-  estimatedTime: string;
-  flowStatusId: string;
   id: number;
-  orderIndex: any;
-  sprintId: number;
-  tagId: number;
-  taskPriorityColor: string;
-  taskPriorityIcon: string;
-  taskPriorityId: number;
-  taskPriorityName: string;
-  taskTypeId: number;
   title: string;
-  trackingStatusId: number;
 }
-interface propsType{
-  isProjectSelected?:boolean
-  projectId?:number
-  setProjectData:(id:any)=>void
-  projectData:any
-  handleClick:(id:number)=>void
-  handleTaskClick:(taskName:string)=>void
+interface propsType {
+  isProjectSelected?: boolean;
+  projectId?: number;
+  setProjectData: (id: any) => void;
+  projectData: any;
+  handleSelectProject: (id: number) => void;
+  handleSelectTask: (taskName: string) => void;
 }
-export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProjectData ,handleClick,handleTaskClick}:propsType) => {
+export const SelectTaskPage = ({
+  projectId,
+  isProjectSelected,
+  projectData,
+  setProjectData,
+  handleSelectProject,
+  handleSelectTask,
+}: propsType) => {
   const authToken = decryptData("authToken");
   const [allTask, setAllTask] = useState<
     Array<{
       assignedTo: number;
-      assigneeName: string;
-      createdBy: number;
-      description: string;
-      estimatedTime: string;
-      flowStatusId: string;
       id: number;
-      orderIndex: any;
-      sprintId: number;
-      tagId: number;
-      taskPriorityColor: string;
-      taskPriorityIcon: string;
-      taskPriorityId: number;
-      taskPriorityName: string;
-      taskTypeId: number;
       title: string;
-      trackingStatusId: number;
     }>
   >([]);
-  
+
+ 
+
   const fetchProject = async () => {
     const response = await axios.get(`${rootUrl}/api/projects`, {
       headers: {
@@ -78,11 +59,9 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
     setAllTask(data);
   };
 
- 
   useEffect(() => {
     fetchProject();
   }, []);
-  console.log(projectId);
 
   useEffect(() => {
     if (projectId) {
@@ -107,7 +86,17 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
                   allTask
                     .filter((task: taskType) => task.assignedTo === userData.id)
                     .map((task: taskType) => {
-                      return <li className="list-group-item p-2" key={task.id} onClick={()=>{handleTaskClick(task.title)}}>{task.title}</li>;
+                      return (
+                        <li
+                          className="list-group-item p-2"
+                          key={task.id}
+                          onClick={() => {
+                            handleSelectTask(task.title);
+                          }}
+                        >
+                          {task.title}
+                        </li>
+                      );
                     })}
               </ul>
             </div>
@@ -123,7 +112,11 @@ export const SelectTaskPage = ({projectId, isProjectSelected,projectData,setProj
               {projectData &&
                 projectData.map((data: any) => {
                   return (
-                    <li className="list-group-item p-2" key={data.id} onClick={() => handleClick(data.id)}>
+                    <li
+                      className="list-group-item p-2"
+                      key={data.id}
+                      onClick={() => handleSelectProject(data.id)}
+                    >
                       {data.name}
                     </li>
                   );

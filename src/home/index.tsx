@@ -28,7 +28,7 @@ const Home = () => {
     projectName: string;
     id: number;
   }>();
-  const [isSelectTaskWindow, setIsSelectTaskWindow] = useState<boolean>(false);
+  const [showSelectTaskWindow, setShowSelectTaskWindow] = useState<boolean>(false);
   const [taskDetails, setTaskDetails] = useState<string>();
 
   const handleCloseSelectTaskWindow = () => {
@@ -37,9 +37,9 @@ const Home = () => {
 
   const handleChange = (e: any) => {
     if (e.target.checked) {
-      setIsSelectTaskWindow(true);
+      setShowSelectTaskWindow(true);
     } else {
-      setIsSelectTaskWindow(false);
+      setShowSelectTaskWindow(false);
       setSeconds(0);
       clearInterval(timeChangeInterval.current);
       timeChangeInterval.current = null;
@@ -55,7 +55,7 @@ const Home = () => {
     handleCloseWindow();
   };
 
-  const handleClick = (id: number) => {
+  const handleSelectProject = (id: number) => {
     const projectName: any = projectData.find(
       (project: any) => project.id === id
     );
@@ -67,7 +67,7 @@ const Home = () => {
     }
   };
 
-  const handleTaskClick = (taskName: string) => {
+  const handleSelectTask = (taskName: string) => {
     if (taskName) {
       setTaskDetails(taskName);
       handleCloseSelectTaskWindow();
@@ -165,15 +165,15 @@ const Home = () => {
           />
         </ScreenshotWindow>
       )}
-      {isSelectTaskWindow ? (
+      {showSelectTaskWindow ? (
         <SelectTaskWindow ref={SelectTaskWindowRef}>
           <SelectTaskPage
             isProjectSelected={isProjectSelected}
             projectId={projectId}
             setProjectData={setProjectData}
-            handleClick={handleClick}
+            handleSelectProject={handleSelectProject}
             projectData={projectData}
-            handleTaskClick={handleTaskClick}
+            handleSelectTask={handleSelectTask}
           />
         </SelectTaskWindow>
       ) : null}
