@@ -37,14 +37,13 @@ export const Login = () => {
   const errorMessage = (error: any) => {
     console.log(error);
   };
-  { }
-  const onSubmit: SubmitHandler<InputsType> = async (data) => {
-    await ApiService.postData("api/token", data).then((response) => {
-      redirectAfterLogin(response);
-    })
-      .catch((e) => {
-        console.log(e);
-      });
+  const onSubmit: SubmitHandler<InputsType> =async (data) => {  
+    await ApiService.postData("api/token",data).then((response) => {
+          redirectAfterLogin(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
   };
   return (
     <div className="container-fluid main-container">

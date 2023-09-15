@@ -10,8 +10,8 @@ const ipcRenderer =
     ? window.require("electron").ipcRenderer
     : false;
 const Home = () => {
-  const ScreenshotWindowRef = useRef<any>(null);
-  const SelectTaskWindowRef = useRef<any>(null);
+  const ScreenshotWindowRef = useRef<any>(null);  
+  const SelectTaskWindowRef = useRef<any>(null);  
   const [seconds, setSeconds] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [showScreenshotCapturedWindow, setShowScreenshotCapturedWindow] =
@@ -150,7 +150,7 @@ const Home = () => {
     setShowScreenshotCapturedWindow(false);
     ScreenshotWindowRef?.current?.closeWindow();
     setIsScreenshotDeleted(false);
-  };
+  };  
 
   const userData = decryptData("userData");
 
