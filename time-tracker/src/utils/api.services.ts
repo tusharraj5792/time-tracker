@@ -19,5 +19,16 @@ export class ApiService {
         
         return response
     }
+
+    public static async postLoginData(url: string, data: any) {
+    const config = {
+      method: "post",
+      url: `${rootUrl}/${url}`,
+      data: data,
+    };
+
+    const response = await axios(config);
+    return response;
+  }
     
 }

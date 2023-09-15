@@ -7,6 +7,7 @@ import axios from "axios";
 import { rootUrl } from "../login";
 import SelectTaskWindow from "../selectTaskWindow";
 import { SelectTaskPage } from "../selectTaskPage";
+import { ApiService } from "../utils/api.services";
 const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
@@ -78,20 +79,14 @@ const Home = () => {
       setTimeout(async () => {
         setPreviousImage(imageData);
         if (!isScreenshotDeleted && navigator.onLine) {
-          try {
-            const data = {
-              id: 618,
-              taskTimeTrackerUrl: formData,
-            };
-            await axios.post(`${rootUrl}/api/tasktimetracker/url`, data, {
-              headers: {
-                authorization: `Bearer ${userData.token}`,
-                "content-length": "0",
-              },
-            });
-          } catch (error) {
-            alert(error);
-          }
+          const data = {
+            id: 618,
+            taskTimeTrackerUrl: formData,
+          };
+          await ApiService.postData(
+            "api/tasktimetracker/url",
+            data,
+          );
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
           const storedScreenshots: any = JSON.parse(local);
@@ -146,9 +141,9 @@ const Home = () => {
           />
         </ScreenshotWindow>
       )}
-      <SelectTaskWindow ref={SelectTaskWindowRef}>
+      {/* <SelectTaskWindow ref={SelectTaskWindowRef}>
         <SelectTaskPage />
-      </SelectTaskWindow>
+      </SelectTaskWindow> */}
       <div className="d-flex align-items-center justify-content-center main-wrapper">
         <div className="tracker-main">
           <div className="trcking-head border-bottom">

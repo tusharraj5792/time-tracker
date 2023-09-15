@@ -1,5 +1,4 @@
 import "./login.css";
-import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { encryptData } from "../utils/utils";
@@ -13,7 +12,7 @@ interface InputsType {
   password: string;
 }
 export const rootUrl = import.meta.env.VITE_APP_BASE_API_URL;
-
+const googleAuthId=import.meta.env.GOOGLE_AUTH_ID
 
 
 export const Login = () => {
@@ -38,19 +37,14 @@ export const Login = () => {
   const errorMessage = (error: any) => {
     console.log(error);
   };
-
-  const onSubmit: SubmitHandler<InputsType> = (data) => {    
-    axios
-      .post(`${rootUrl}/api/token`, {
-        email: data.email,
-        password: data.password,
-      })
-      .then((response) => {
-        redirectAfterLogin(response);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+{}
+  const onSubmit: SubmitHandler<InputsType> =async (data) => {  
+    const response=await ApiService.postData("api/token",data).then((response) => {
+          redirectAfterLogin(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
   };
   return (
     <div className="container-fluid main-container">
@@ -131,7 +125,7 @@ export const Login = () => {
         </form>
         {/* Login with google */}
         <div className="mt-3 d-flex justify-content-center">
-          <GoogleOAuthProvider clientId="961644620937-07n0d959mcsm23rd92aga657stou7rp1.apps.googleusercontent.com">
+          <GoogleOAuthProvider clientId={googleAuthId}>
             <div className="flex justify-center">
               <GoogleLogin
                 theme="outline"
