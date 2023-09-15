@@ -74,10 +74,8 @@ function createWindow() {
           resizable: false,
         });
         event.newGuest = new BrowserWindow(options);
-        // event.newGuest.setContentProtection(true);
         event.newGuest.setSkipTaskbar(true);
       } else if (frameName === "selectTaskWindow") {
-        console.log(event);
         event.preventDefault();
         Object.assign(options, {
           frame: false,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import { rootUrl } from "../login";
 import { decryptData } from "../utils/utils";
@@ -18,24 +18,6 @@ export const SelectTaskPage = () => {
     setProjectData(data);
   };
 
-  // const fetchUserTask = async () => {
-  //   const payload: any = {
-  //     ProjectId: windnowObj.selectedProject.id,
-  //     IsActive: true,
-  //   };
-  //   const response = await axios.post(
-  //     `${rootUrl}/api/task/board-tasks?ProjectId=${windnowObj.selectedProject.id}&IsActive=true`,
-  //     payload,
-  //     {
-  //       headers: {
-  //         authorization: `Bearer ${authToken}`,
-  //       },
-  //     }
-  //   );
-  //   const data = await response.data.data;
-  //   console.log(data);
-    
-  // };
   const handleChange = (e: any) => {
     const id = e.target.value;
     if (id) {
@@ -52,11 +34,7 @@ export const SelectTaskPage = () => {
   useEffect(() => {
     fetchProject();
   }, []);
-  // useEffect(() => {
-  //   if (windnowObj.selectedProject.id) {
-  //     fetchUserTask();
-  //   }
-  // }, [windnowObj.selectedProject.id]);
+
   return (
     <div className="main-wrapper">
       <div className="p-3">

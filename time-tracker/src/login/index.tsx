@@ -81,7 +81,6 @@ export const Login = () => {
             <br />
             <input
               {...register("email")}
-              defaultValue={"abhishek.choudhary@ensuesoft.com"}
               type="email"
               id="userEmail"
               className="form-control shadow-none"
@@ -102,7 +101,6 @@ export const Login = () => {
             </div>
             <input
               {...register("password")}
-              defaultValue={"Abhi@12345"}
               name="password"
               id="password"
               className="form-control shadow-none"
