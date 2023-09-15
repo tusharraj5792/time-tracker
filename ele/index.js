@@ -8,6 +8,7 @@ const {
   Menu,
   Tray,
   desktopCapturer,
+  globalShortcut,
 } = require("electron");
 const isOnline = require("is-online");
 const path = require("path");
@@ -46,18 +47,32 @@ function createWindow() {
   }
   trayWin = win;
 
-  // win.webContents.openDevTools();
-
   win.loadFile("index.html");
   win.loadURL(
-    // "https://room.intajy.com/"
-    "http://localhost:5173/"
+    "http://localhost:3000/"
   );
 
   win.webContents.on(
     "new-window",
     (event, url, frameName, disposition, options, additionalFeatures) => {
       if (frameName === "screenshotCaptured") {
+        event.preventDefault();
+        Object.assign(options, {
+          frame: false,
+          transparent: false,
+          webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false,
+            nativeWindowOpen: true,
+          },
+          alwaysOnTop: true,
+          minimizable: false,
+          resizable: false,
+        });
+        event.newGuest = new BrowserWindow(options);
+        event.newGuest.setSkipTaskbar(true);
+      } else if (frameName === "selectTaskWindow") {
         event.preventDefault();
         Object.assign(options, {
           frame: false,
@@ -175,6 +190,11 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
+  });
+
+  app.on("browser-window-focus", function () {
+    globalShortcut.unregister("CommandOrControl+R");
+    globalShortcut.unregister("F5");
   });
 
   app.setLoginItemSettings({

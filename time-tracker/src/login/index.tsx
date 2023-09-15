@@ -1,41 +1,50 @@
 import "./login.css";
-import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { encryptData } from "../utils/utils";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
+import { ApiService } from "../utils/api.services";
+// import { ApiService } from "../utils/api.services"
 
 interface InputsType {
   email: string;
   password: string;
 }
-export const rootUrl= import.meta.env.VITE_APP_BASE_API_URL;
+export const rootUrl = import.meta.env.VITE_APP_BASE_API_URL;
+const googleAuthId=import.meta.env.GOOGLE_AUTH_ID
+
 
 export const Login = () => {
   const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<InputsType>();
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm<InputsType>();
+  const redirectAfterLogin = (response:any)=>{
+    if (response.status === 200) {
+      encryptData("userData",response.data)
+      encryptData("authToken", response.data.token);
+      const data = response.data;
+      navigate("/", { state: data });
+    } else {
+      navigate(-1);
+    }
+  }
 
-  const onSubmit: SubmitHandler<InputsType> = (data) => {
-    axios
-      .post(`${rootUrl}/api/token`, {
-        email: data.email,
-        password: data.password,
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          encryptData("authToken",response.data.token)
-          const data = response.data;
-          navigate("/home", { state: data });
-        } else {
-          navigate(-1);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  const responseMessage = async (response: any) => {
+    const resp = await ApiService.postData('api/user/login-with-google',{idToken:response.credential});
+    redirectAfterLogin(resp);    
+  };
+  const errorMessage = (error: any) => {
+    console.log(error);
+  };
+{}
+  const onSubmit: SubmitHandler<InputsType> =async (data) => {  
+    const response=await ApiService.postData("api/token",data).then((response) => {
+          redirectAfterLogin(response);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
   };
   return (
     <div className="container-fluid main-container">
@@ -114,9 +123,20 @@ export const Login = () => {
             </button>
           </div>
         </form>
-        {/* <!-- Google icon here --> */}
-        {/* <i className="fa-brands fa-google"></i>  */}
-
+        {/* Login with google */}
+        <div className="mt-3 d-flex justify-content-center">
+          <GoogleOAuthProvider clientId={googleAuthId}>
+            <div className="flex justify-center">
+              <GoogleLogin
+                theme="outline"
+                type="icon"
+                shape="square"
+                onSuccess={responseMessage}
+                onError={() =>errorMessage}
+              />
+            </div>
+          </GoogleOAuthProvider>
+        </div>
         <div className="text-center text-secondary mt-3">
           <p className="mb-0 text-">
             Doesn't have an account?
@@ -125,6 +145,7 @@ export const Login = () => {
             </a>
           </p>
         </div>
+        
       </div>
     </div>
   );
