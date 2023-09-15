@@ -1,7 +1,4 @@
 body {
-  -webkit-user-select: none;
-  -webkit-app-region: drag;
-
   #main-container {
     -webkit-app-region: no-drag;
   }
@@ -61,20 +58,23 @@ body {
     }
   }
   nav {
+    user-select: auto;
     width: 100%;
     height: 40px;
-    background-color: #d81159;
+    background-color: #fff;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
 
     .nav-link {
       padding: 15px;
       cursor: pointer;
       font-size: 1.3rem;
       display: unset;
-      color: unset;
+      color: #f14759;
 
       :hover {
         background-color: white !important;
-        color: #d81159 !important;
+        color: #fff !important;
       }
     }
   }
