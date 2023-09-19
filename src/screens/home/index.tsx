@@ -40,6 +40,7 @@ const Home = () => {
   });
   const userData = decryptData("userData");
   const authToken = decryptData("authToken");
+const inputRef=useRef(null)
 
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
@@ -133,7 +134,7 @@ const Home = () => {
           localStorageData.push({
             id: 1,
             time: new Date(),
-            img: data.mageData,
+            img: data.image,
           });
           localStorage.setItem(
             "screenshotUrl",
@@ -195,6 +196,7 @@ const Home = () => {
           handleSelectProject={handleSelectProject}
           projectData={projectData}
           handleSelectTask={handleSelectTask}
+          setIsProjectSelected={setIsProjectSelected}
         />
       ) : (
         <div className="d-flex align-items-center justify-content-center main-wrapper">
@@ -230,6 +232,7 @@ const Home = () => {
                     type="checkbox"
                     role="switch"
                     id="trackingToggle"
+                    ref={inputRef}
                     onChange={(e) => handleChange(e)}
                   />
                 </div>

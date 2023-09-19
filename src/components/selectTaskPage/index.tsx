@@ -15,7 +15,8 @@ interface propsType {
   setProjectData: (id: any) => void;
   projectData: any;
   handleSelectProject: (id: number) => void;
-  handleSelectTask: (task:{taskName:string,taskId:number} ) => void;
+  handleSelectTask: (task: { taskName: string; taskId: number }) => void;
+  setIsProjectSelected: (isProjectSelected: boolean) => void;
 }
 export const SelectTaskPage = ({
   projectId,
@@ -24,6 +25,7 @@ export const SelectTaskPage = ({
   setProjectData,
   handleSelectProject,
   handleSelectTask,
+  setIsProjectSelected,
 }: propsType) => {
   const authToken = decryptData("authToken");
   const [allTask, setAllTask] = useState<
@@ -34,7 +36,9 @@ export const SelectTaskPage = ({
     }>
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [filteredTask, setFilteredTask] = useState<
+    { assignedTo: number; id: number; title: string }[]
+  >([]);
   const fetchProject = async () => {
     const response = await axios.get(`${rootUrl}/api/projects`, {
       headers: {
@@ -49,7 +53,7 @@ export const SelectTaskPage = ({
   };
 
   const fetchUserTask = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     const response = await axios.get(
       `${rootUrl}/api/task/board-tasks?ProjectId=${projectId}&IsActive=true`,
       {
@@ -77,6 +81,15 @@ export const SelectTaskPage = ({
 
   const userData = decryptData("userData");
 
+  useEffect(() => {
+    if (allTask && allTask.length) {
+      const filterTask = allTask.filter(
+        (task: taskType) => task.assignedTo === userData.id
+      );
+      setFilteredTask(filterTask);
+    }
+  }, [allTask]);
+
   return (
     <div className="main-wrapper">
       {isProjectSelected ? (
@@ -90,25 +103,30 @@ export const SelectTaskPage = ({
                 <Loader />
               ) : (
                 <ul className="list-group">
-                  {allTask &&
-                    allTask.length &&
-                    allTask
-                      .filter(
-                        (task: taskType) => task.assignedTo === userData.id
-                      )
-                      .map((task: taskType) => {
-                        return (
-                          <li
-                            className="list-group-item p-2"
-                            key={task.id}
-                            onClick={() => {
-                              handleSelectTask({taskName:task.title,taskId:task.id});
-                            }}
-                          >
-                            {task.title}
-                          </li>
-                        );
-                      })}
+                  {filteredTask && filteredTask.length ? (
+                    filteredTask.map((task: taskType) => {
+                      return (
+                        <li
+                          className="list-group-item p-2"
+                          key={task.id}
+                          onClick={() => {
+                            handleSelectTask({
+                              taskName: task.title,
+                              taskId: task.id,
+                            });
+                          }}
+                        >
+                          {task.title}
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <h1>No Task Assigned </h1>
+                  )}
+
+                  <button onClick={() => setIsProjectSelected(false)}>
+                    Back
+                  </button>
                 </ul>
               )}
             </div>
