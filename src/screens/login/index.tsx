@@ -1,10 +1,10 @@
 import "./login.css";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { encryptData } from "../utils/utils";
+import { encryptData } from "../../utils/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
-import { ApiService } from "../utils/api.services";
+import { ApiService } from "../../utils/api.services";
 // import { ApiService } from "../utils/api.services"
 
 interface InputsType {

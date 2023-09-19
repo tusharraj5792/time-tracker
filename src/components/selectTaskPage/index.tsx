@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { rootUrl } from "../login";
-import { decryptData } from "../utils/utils";
-import { Loader } from "../components/CustomFrame/loader";
+import { rootUrl } from "../../screens/login";
+import { decryptData } from "../../utils/utils";
+import { Loader } from "../loader";
 
 interface taskType {
   assignedTo: number;

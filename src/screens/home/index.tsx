@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { decryptData, getDay, secToMin } from "../utils/utils";
-import ScreenshotWindow from "../screenshotWindow";
-import ScreenshotCaptured from "../screenshotCaptured";
-import SelectTaskWindow from "../selectTaskWindow";
-import { SelectTaskPage } from "../selectTaskPage";
-import { ApiService } from "../utils/api.services";
+import { decryptData, getDay, secToMin } from "../../utils/utils";
+import ScreenshotWindow from "../../components/screenshotWindow";
+import ScreenshotCaptured from "../../components/screenshotCaptured";
+import SelectTaskWindow from "../../components/selectTaskWindow";
+import { SelectTaskPage } from "../../components/selectTaskPage";
+import { ApiService } from "../../utils/api.services";
 const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
