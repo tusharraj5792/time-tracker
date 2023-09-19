@@ -12,8 +12,7 @@ interface InputsType {
   password: string;
 }
 export const rootUrl = import.meta.env.VITE_APP_BASE_API_URL;
-const googleAuthId = import.meta.env.GOOGLE_AUTH_ID
-
+const googleAuthId = import.meta.env.VITE_GOOGLE_AUTH_ID;
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -21,29 +20,32 @@ export const Login = () => {
 
   const redirectAfterLogin = (response: any) => {
     if (response.status === 200) {
-      encryptData("userData", response.data)
+      encryptData("userData", response.data);
       encryptData("authToken", response.data.token);
       const data = response.data;
       navigate("/", { state: data });
     } else {
       navigate(-1);
     }
-  }
+  };
 
   const responseMessage = async (response: any) => {
-    const resp = await ApiService.postData('api/user/login-with-google', { idToken: response.credential });
+    const resp = await ApiService.postData("api/user/login-with-google", {
+      idToken: response.credential,
+    });
     redirectAfterLogin(resp);
   };
   const errorMessage = (error: any) => {
     console.log(error);
   };
-  const onSubmit: SubmitHandler<InputsType> =async (data) => {  
-    await ApiService.postData("api/token",data).then((response) => {
-          redirectAfterLogin(response);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+  const onSubmit: SubmitHandler<InputsType> = async (data) => {
+    await ApiService.postData("api/token", data)
+      .then((response) => {
+        redirectAfterLogin(response);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <div className="container-fluid main-container">
@@ -116,7 +118,11 @@ export const Login = () => {
             </label>
           </div>
           {/* <!-- Sign in btn --> */}
-          <button type="submit" id="submit" className="btn text-white bg-danger text-center w-100 shadow-none">
+          <button
+            type="submit"
+            id="submit"
+            className="btn text-white bg-danger text-center w-100 shadow-none"
+          >
             Sign-in
           </button>
         </form>
@@ -142,7 +148,6 @@ export const Login = () => {
             </a>
           </p>
         </div>
-
       </div>
     </div>
   );
