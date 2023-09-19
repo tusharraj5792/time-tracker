@@ -48,6 +48,7 @@ export const SelectTaskPage = ({
   };
 
   const getTasks = async (id: number | null) => {
+    setIsLoading(true)
     const data = await ApiService.getData(
       `api/task/board-tasks?ProjectId=${id}&IsActive=true`,
       id
