@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { rootUrl } from "../../screens/login";
 import { decryptData } from "../../utils/utils";
 import { Loader } from "../loader";
+import { ApiService } from "../../utils/api.services";
 
 interface taskType {
   assignedTo: number;
@@ -12,21 +11,20 @@ interface taskType {
 interface propsType {
   isProjectSelected?: boolean;
   projectId?: number;
-  setProjectData: (id: any) => void;
-  projectData: any;
+  setAllProjects: (id: any) => void;
+  allProjects: any;
   handleSelectProject: (id: number) => void;
   handleSelectTask: (task:{taskName:string,taskId:number} ) => void;
 }
 export const SelectTaskPage = ({
   projectId,
   isProjectSelected,
-  projectData,
-  setProjectData,
+  allProjects,
+  setAllProjects,
   handleSelectProject,
   handleSelectTask,
 }: propsType) => {
-  const authToken = decryptData("authToken");
-  const [allTask, setAllTask] = useState<
+  const [allTasks, setAllTasks] = useState<
     Array<{
       assignedTo: number;
       id: number;
@@ -35,43 +33,32 @@ export const SelectTaskPage = ({
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const fetchProject = async () => {
-    const response = await axios.get(`${rootUrl}/api/projects`, {
-      headers: {
-        authorization: `Bearer ${authToken}`,
-      },
-    });
-    const data = await response.data.data;
-    if (data) {
+  const getProjects = async () => {
+    const data = await ApiService.getData('api/projects',null);
+    if (data.data.length) {
+      setAllProjects(data.data);
       setIsLoading(false);
+    }else{
+      setIsLoading(true)
     }
-    setProjectData(data);
   };
 
-  const fetchUserTask = async () => {
-    setIsLoading(true)
-    const response = await axios.get(
-      `${rootUrl}/api/task/board-tasks?ProjectId=${projectId}&IsActive=true`,
-      {
-        headers: {
-          authorization: `Bearer ${authToken}`,
-          Projectid: projectId,
-        },
-      }
-    );
-    const data = await response.data.data;
-    if (data) {
+  const getTasks = async (id:number|null) => {
+    const data = await ApiService.getData(`api/task/board-tasks?ProjectId=${id}&IsActive=true`,id)
+    if (data.data.length) {
       setIsLoading(false);
+      setAllTasks(data.data);
+    }else{
+      setIsLoading(true)
     }
-    setAllTask(data);
   };
   useEffect(() => {
-    fetchProject();
+    getProjects()
   }, []);
 
   useEffect(() => {
     if (projectId) {
-      fetchUserTask();
+      getTasks(projectId);
     }
   }, [projectId]);
 
@@ -90,9 +77,7 @@ export const SelectTaskPage = ({
                 <Loader />
               ) : (
                 <ul className="list-group">
-                  {allTask &&
-                    allTask.length &&
-                    allTask
+                  {!!allTasks && !!allTasks.length && allTasks
                       .filter(
                         (task: taskType) => task.assignedTo === userData.id
                       )
@@ -124,8 +109,8 @@ export const SelectTaskPage = ({
               <Loader />
             ) : (
               <ul className="list-group">
-                {projectData &&
-                  projectData.map((data: any) => {
+                {!!allProjects && !!allProjects.length && 
+                  allProjects.map((data: any) => {
                     return (
                       <li
                         className="list-group-item p-2"

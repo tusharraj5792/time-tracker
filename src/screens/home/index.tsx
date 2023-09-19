@@ -3,8 +3,7 @@ import { decryptData, getDay, secToMin } from "../../utils/utils";
 import ScreenshotWindow from "../../components/screenshotWindow";
 import ScreenshotCaptured from "../../components/screenshotCaptured";
 import { SelectTaskPage } from "../../components/selectTaskPage";
-import { rootUrl } from "../login";
-import axios from "axios";
+import { ApiService } from "../../utils/api.services";
 
 const ipcRenderer =
   typeof window.require === "function"
@@ -22,7 +21,7 @@ const Home = () => {
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
   const screenshotCaptureInterval: any = useRef(null);
   const timeChangeInterval: any = useRef(null);
-  const [projectData, setProjectData] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
   const [isProjectSelected, setIsProjectSelected] = useState<boolean>(false);
   const [projectId, setProjectId] = useState<any>();
   const [projectDetails, setProjectDetails] = useState<{
@@ -39,8 +38,6 @@ const Home = () => {
     taskId: 0,
   });
   const userData = decryptData("userData");
-  const authToken = decryptData("authToken");
-
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
   };
@@ -69,7 +66,7 @@ const Home = () => {
   };
 
   const handleSelectProject = (id: number) => {
-    const projectName: any = projectData.find(
+    const projectName: any = allProjects.find(
       (project: any) => project.id === id
     );
 
@@ -122,7 +119,7 @@ const Home = () => {
       formData.append("file", file);
       setCurrentImage(data.image);
       setTimeout(async () => {
-        setPreviousImage(data.imageData);
+        setPreviousImage(data.image);
         if (!isScreenshotDeleted && navigator.onLine) {
           await handleSaveScreenshots(formData,data);
         } else {
@@ -133,7 +130,7 @@ const Home = () => {
           localStorageData.push({
             id: 1,
             time: new Date(),
-            img: data.mageData,
+            img: data.image,
           });
           localStorage.setItem(
             "screenshotUrl",
@@ -164,16 +161,7 @@ const Home = () => {
   };
 
   const handleSaveScreenshots = async (formData: any,data:any) => {
-    await axios.post(
-      `${rootUrl}/api/tasktimetracker/screenshot?taskid=${data.taskId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          Projectid: data.projectId,
-        },
-      }
-    );
+    await ApiService.postData(`api/tasktimetracker/screenshot?taskid=${data.taskId}`,formData,data.projectId);
   };
 
   return (
@@ -191,9 +179,9 @@ const Home = () => {
         <SelectTaskPage
           isProjectSelected={isProjectSelected}
           projectId={projectId}
-          setProjectData={setProjectData}
+          setAllProjects={setAllProjects}
           handleSelectProject={handleSelectProject}
-          projectData={projectData}
+          allProjects={allProjects}
           handleSelectTask={handleSelectTask}
         />
       ) : (
