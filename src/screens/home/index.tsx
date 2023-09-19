@@ -91,9 +91,9 @@ const inputRef=useRef(null)
         setTotalTime((seconds) => seconds + 1);
       }, 1000);
       setTimeout(()=>{
-        let d:any= document.getElementById("trackingToggle")
-        d.checked=true
-      },500)
+        let tooglebtn:any= document.getElementById("trackingToggle")
+        tooglebtn.checked=true
+      },200)
       
       screenshotCaptureInterval.current = setInterval(() => {
         secToMin(seconds);
