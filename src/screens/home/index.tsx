@@ -21,7 +21,7 @@ const Home = () => {
   const [isScreenshotDeleted, setIsScreenshotDeleted] = useState(false);
   const screenshotCaptureInterval: any = useRef(null);
   const timeChangeInterval: any = useRef(null);
-  const [projectData, setProjectData] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
   const [isProjectSelected, setIsProjectSelected] = useState<boolean>(false);
   const [projectId, setProjectId] = useState<any>();
   const [projectDetails, setProjectDetails] = useState<{
@@ -66,7 +66,7 @@ const Home = () => {
   };
 
   const handleSelectProject = (id: number) => {
-    const projectName: any = projectData.find(
+    const projectName: any = allProjects.find(
       (project: any) => project.id === id
     );
 
@@ -179,9 +179,9 @@ const Home = () => {
         <SelectTaskPage
           isProjectSelected={isProjectSelected}
           projectId={projectId}
-          setProjectData={setProjectData}
+          setAllProjects={setAllProjects}
           handleSelectProject={handleSelectProject}
-          projectData={projectData}
+          allProjects={allProjects}
           handleSelectTask={handleSelectTask}
         />
       ) : (

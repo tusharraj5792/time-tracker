@@ -11,20 +11,20 @@ interface taskType {
 interface propsType {
   isProjectSelected?: boolean;
   projectId?: number;
-  setProjectData: (id: any) => void;
-  projectData: any;
+  setAllProjects: (id: any) => void;
+  allProjects: any;
   handleSelectProject: (id: number) => void;
   handleSelectTask: (task:{taskName:string,taskId:number} ) => void;
 }
 export const SelectTaskPage = ({
   projectId,
   isProjectSelected,
-  projectData,
-  setProjectData,
+  allProjects,
+  setAllProjects,
   handleSelectProject,
   handleSelectTask,
 }: propsType) => {
-  const [allTask, setAllTask] = useState<
+  const [allTasks, setAllTasks] = useState<
     Array<{
       assignedTo: number;
       id: number;
@@ -36,7 +36,7 @@ export const SelectTaskPage = ({
   const getProjects = async () => {
     const data = await ApiService.getData('api/projects',null);
     if (data.data.length) {
-      setProjectData(data.data);
+      setAllProjects(data.data);
       setIsLoading(false);
     }else{
       setIsLoading(true)
@@ -47,7 +47,7 @@ export const SelectTaskPage = ({
     const data = await ApiService.getData(`api/task/board-tasks?ProjectId=${id}&IsActive=true`,id)
     if (data.data.length) {
       setIsLoading(false);
-      setAllTask(data.data);
+      setAllTasks(data.data);
     }else{
       setIsLoading(true)
     }
@@ -77,7 +77,7 @@ export const SelectTaskPage = ({
                 <Loader />
               ) : (
                 <ul className="list-group">
-                  {!!allTask && !!allTask.length && allTask
+                  {!!allTasks && !!allTasks.length && allTasks
                       .filter(
                         (task: taskType) => task.assignedTo === userData.id
                       )
@@ -109,8 +109,8 @@ export const SelectTaskPage = ({
               <Loader />
             ) : (
               <ul className="list-group">
-                {!!projectData && !!projectData.length && 
-                  projectData.map((data: any) => {
+                {!!allProjects && !!allProjects.length && 
+                  allProjects.map((data: any) => {
                     return (
                       <li
                         className="list-group-item p-2"
