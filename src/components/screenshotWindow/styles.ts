@@ -68,7 +68,7 @@ css = `
   transform-origin: left center;
   animation: roundtime calc(var(--duration) * 1s) steps(var(--duration))
   forwards;
-  background: #7f54ee;  
+  background: #f24759;  
 }
 .round-time-bar[data-style="smooth"] div {
   animation: roundtime calc(var(--duration) * 1s) linear forwards;
