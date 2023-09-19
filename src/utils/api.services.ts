@@ -51,7 +51,7 @@ export class ApiService {
     };
     const response = await axios.post(`${rootUrl}/${url}`, data,config)
       .then((res) => {
-        return res;
+        return res.data;
       })
       .catch((err) => {
         if (err.response && err.response.status === 401) {

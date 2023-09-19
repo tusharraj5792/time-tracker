@@ -5,6 +5,8 @@ import { encryptData } from "../../utils/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import { ApiService } from "../../utils/api.services";
+import * as AppConstants from '../../utils/Constants';
+import FormFieldError from "../../components/formFieldError";
 
 interface InputsType {
   email: string;
@@ -15,7 +17,7 @@ const googleAuthId = import.meta.env.VITE_GOOGLE_AUTH_ID;
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm<InputsType>();
+  const { register, handleSubmit,formState:{errors}} = useForm<InputsType>();
 
   const redirectAfterLogin = (response: any) => {
     if (response.status === 200) {
@@ -65,7 +67,7 @@ export const Login = () => {
       <div className="p-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* <!-- email --> */}
-          <div className="mb-3">
+          <div className="mb-1">
             <label
               htmlFor="userEmail"
               className="form-label text-secondary fw-normal mb-1"
@@ -74,14 +76,24 @@ export const Login = () => {
             </label>
             <br />
             <input
-              {...register("email")}
+              {...register("email",{
+                required:true,
+                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              })}
               type="email"
               id="userEmail"
+              
               className="form-control shadow-none"
             />
           </div>
+          {errors.email?.type === 'required' && (
+            <FormFieldError message={AppConstants.requiredField} />
+          )}
+          {errors.email?.type === 'pattern' && (
+            <FormFieldError message={AppConstants.notValidEmail} />
+          )}
           {/* <!-- password --> */}
-          <div className="mb-2">
+          <div className="mb-1 mt-2">
             <div className="d-flex justify-content-between align-items-start">
               <label
                 htmlFor="password"
@@ -94,15 +106,18 @@ export const Login = () => {
               </a>
             </div>
             <input
-              {...register("password")}
+              {...register("password",{required:true})}
               name="password"
               id="password"
               className="form-control shadow-none"
               type="password"
             />
           </div>
+          {errors.password?.type === 'required' && (
+            <FormFieldError message={AppConstants.requiredField} />
+          )}
           {/* <!-- checkbox --> */}
-          <div className="mb-3 d-flex gap-2 align-items-start justify-content-start">
+          <div className="mb-3 mt-2 d-flex gap-2 align-items-start justify-content-start">
             <input
               className="form-check-input shadow-none outline-none"
               type="checkbox"
