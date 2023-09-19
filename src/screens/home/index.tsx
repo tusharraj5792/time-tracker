@@ -40,6 +40,8 @@ const Home = () => {
   const userData = decryptData("userData");
 const inputRef=useRef(null)
 
+
+
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
   };
@@ -88,7 +90,11 @@ const inputRef=useRef(null)
         setSeconds((seconds) => seconds + 1);
         setTotalTime((seconds) => seconds + 1);
       }, 1000);
-
+      setTimeout(()=>{
+        let tooglebtn:any= document.getElementById("trackingToggle")
+        tooglebtn.checked=true
+      },200)
+      
       screenshotCaptureInterval.current = setInterval(() => {
         secToMin(seconds);
         setTotalTime((totalT) => totalT);
@@ -149,9 +155,9 @@ const inputRef=useRef(null)
       let localData: any = localStorage.getItem("screenshotUrl");
       const getLocalData: any = JSON.parse(localData);
       if (!getLocalData) {
-        console.log("no data ");
+        console.log("no data in local storage");
       } else {
-        console.log("have data");
+        console.log("local storage  have data");
       }
     }
   }, [navigator.onLine]);
