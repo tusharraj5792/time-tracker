@@ -5,7 +5,6 @@ import { encryptData } from "../../utils/utils";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GoogleLogin } from "@react-oauth/google";
 import { ApiService } from "../../utils/api.services";
-// import { ApiService } from "../utils/api.services"
 
 interface InputsType {
   email: string;
@@ -30,7 +29,7 @@ export const Login = () => {
   };
 
   const responseMessage = async (response: any) => {
-    const resp = await ApiService.postData("api/user/login-with-google", {
+    const resp = await ApiService.postLoginData("api/user/login-with-google", {
       idToken: response.credential,
     });
     redirectAfterLogin(resp);
@@ -39,7 +38,7 @@ export const Login = () => {
     console.log(error);
   };
   const onSubmit: SubmitHandler<InputsType> = async (data) => {
-    await ApiService.postData("api/token", data)
+    await ApiService.postLoginData("api/token", data)
       .then((response) => {
         redirectAfterLogin(response);
       })
