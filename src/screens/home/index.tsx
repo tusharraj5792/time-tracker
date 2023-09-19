@@ -245,15 +245,6 @@ const inputRef=useRef(null)
                 <p className="mb-0">This week (UTC)</p>
               </div>
 
-              <div>
-                <h6 className="fw-bold">Memo</h6>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="What are you working on ?"
-                />
-              </div>
-
               <div className="mt-3">
                 <p>Latest Screen Capture</p>
                 <div className="screenshot-box d-flex align-items-center justify-content-center">
@@ -274,7 +265,7 @@ const inputRef=useRef(null)
             <div className="trcking-foot border-top p-3">
               <div className="d-flex align-items-center justify-content-between">
                 <p className="mb-0">{`${userData.firstName} ${userData.lastName}`}</p>
-                <p className="mb-0">Messages</p>
+                {/* <p className="mb-0">Messages</p> */}
               </div>
             </div>
           </div>

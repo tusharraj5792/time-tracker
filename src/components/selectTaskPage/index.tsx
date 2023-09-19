@@ -86,10 +86,14 @@ export const SelectTaskPage = ({
       {isProjectSelected ? (
         <>
           <div className="p-3">
-            <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
+            <button onClick={() => setIsProjectSelected(false)} className="fw-bold border-0 bg-transparent text-danger">
+              <i className="fa-solid fa-arrow-left"></i> Back
+            </button>
+            <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3 text-center">
               Please select task
             </h6>
-            <div className="mb-3 max-ul-h">
+
+            <div className={`max-ul-h ${isLoading ? 'loading' :''}`}>
               {isLoading ? (
                 <Loader />
               ) : (
@@ -98,7 +102,7 @@ export const SelectTaskPage = ({
                     filteredTasks.map((task: taskType) => {
                       return (
                         <li
-                          className="list-group-item p-2"
+                          className="list-group-item p-2 cursor-pointer"
                           key={task.id}
                           onClick={() => {
                             handleSelectTask({
@@ -107,17 +111,18 @@ export const SelectTaskPage = ({
                             });
                           }}
                         >
-                          {task.title}
+                          <div className="d-flex align-items-center justify-content-between">
+                            <div>
+                              {task.title}
+                            </div>
+                            <i className="fa-solid fa-arrow-right ms-4 text-danger"></i>
+                          </div>
                         </li>
                       );
                     })
                   ) : (
                     <h1>No Task Assigned </h1>
                   )}
-
-                  <button onClick={() => setIsProjectSelected(false)}>
-                    Back
-                  </button>
                 </ul>
               )}
             </div>
@@ -128,7 +133,7 @@ export const SelectTaskPage = ({
           <h6 style={{ fontSize: "18px" }} className="fw-bold mb-3">
             Please select project
           </h6>
-          <div className="mb-3 max-ul-h">
+          <div className={`max-ul-h ${isLoading ? 'loading' :''}`}>
             {isLoading ? (
               <Loader />
             ) : (
@@ -138,11 +143,16 @@ export const SelectTaskPage = ({
                   allProjects.map((data: any) => {
                     return (
                       <li
-                        className="list-group-item p-2"
+                        className="list-group-item p-2 cursor-pointer"
                         key={data.id}
                         onClick={() => handleSelectProject(data.id)}
                       >
-                        {data.name}
+                        <div className="d-flex align-items-center justify-content-between">
+                          <div>
+                            {data.name}
+                          </div>
+                          <i className="fa-solid fa-arrow-right ms-4 text-danger"></i>
+                        </div>
                       </li>
                     );
                   })}
