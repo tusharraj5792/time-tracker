@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { decryptData, getDay, secToMin } from "../../utils/utils";
 import ScreenshotWindow from "../../components/screenshotWindow";
 import ScreenshotCaptured from "../../components/screenshotCaptured";
-import SelectTaskWindow from "../../components/selectTaskWindow";
 import { SelectTaskPage } from "../../components/selectTaskPage";
-import { ApiService } from "../../utils/api.services";
 import { rootUrl } from "../login";
 import axios from "axios";
 
