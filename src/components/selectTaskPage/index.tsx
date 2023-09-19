@@ -15,7 +15,7 @@ interface propsType {
   setProjectData: (id: any) => void;
   projectData: any;
   handleSelectProject: (id: number) => void;
-  handleSelectTask: (taskName: string) => void;
+  handleSelectTask: (task:{taskName:string,taskId:number} ) => void;
 }
 export const SelectTaskPage = ({
   projectId,
@@ -102,7 +102,7 @@ export const SelectTaskPage = ({
                             className="list-group-item p-2"
                             key={task.id}
                             onClick={() => {
-                              handleSelectTask(task.title);
+                              handleSelectTask({taskName:task.title,taskId:task.id});
                             }}
                           >
                             {task.title}
