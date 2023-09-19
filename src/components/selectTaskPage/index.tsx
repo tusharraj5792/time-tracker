@@ -14,7 +14,8 @@ interface propsType {
   setAllProjects: (id: any) => void;
   allProjects: any;
   handleSelectProject: (id: number) => void;
-  handleSelectTask: (task:{taskName:string,taskId:number} ) => void;
+  handleSelectTask: (task: { taskName: string; taskId: number }) => void;
+  setIsProjectSelected: (isProjectSelected: boolean) => void;
 }
 export const SelectTaskPage = ({
   projectId,
@@ -23,6 +24,7 @@ export const SelectTaskPage = ({
   setAllProjects,
   handleSelectProject,
   handleSelectTask,
+  setIsProjectSelected,
 }: propsType) => {
   const [allTasks, setAllTasks] = useState<
     Array<{
@@ -32,28 +34,33 @@ export const SelectTaskPage = ({
     }>
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [filteredTasks, setFilteredTasks] = useState<
+    { assignedTo: number; id: number; title: string }[]
+  >([]);
   const getProjects = async () => {
-    const data = await ApiService.getData('api/projects',null);
+    const data = await ApiService.getData("api/projects", null);
     if (data.data.length) {
       setAllProjects(data.data);
       setIsLoading(false);
-    }else{
-      setIsLoading(true)
+    } else {
+      setIsLoading(true);
     }
   };
 
-  const getTasks = async (id:number|null) => {
-    const data = await ApiService.getData(`api/task/board-tasks?ProjectId=${id}&IsActive=true`,id)
+  const getTasks = async (id: number | null) => {
+    const data = await ApiService.getData(
+      `api/task/board-tasks?ProjectId=${id}&IsActive=true`,
+      id
+    );
     if (data.data.length) {
       setIsLoading(false);
       setAllTasks(data.data);
-    }else{
-      setIsLoading(true)
+    } else {
+      setIsLoading(true);
     }
   };
   useEffect(() => {
-    getProjects()
+    getProjects();
   }, []);
 
   useEffect(() => {
@@ -63,6 +70,15 @@ export const SelectTaskPage = ({
   }, [projectId]);
 
   const userData = decryptData("userData");
+
+  useEffect(() => {
+    if (allTasks && allTasks.length) {
+      const filterTask = allTasks.filter(
+        (task: taskType) => task.assignedTo === userData.id
+      );
+      setFilteredTasks(filterTask);
+    }
+  }, [allTasks]);
 
   return (
     <div className="main-wrapper">
@@ -77,23 +93,30 @@ export const SelectTaskPage = ({
                 <Loader />
               ) : (
                 <ul className="list-group">
-                  {!!allTasks && !!allTasks.length && allTasks
-                      .filter(
-                        (task: taskType) => task.assignedTo === userData.id
-                      )
-                      .map((task: taskType) => {
-                        return (
-                          <li
-                            className="list-group-item p-2"
-                            key={task.id}
-                            onClick={() => {
-                              handleSelectTask({taskName:task.title,taskId:task.id});
-                            }}
-                          >
-                            {task.title}
-                          </li>
-                        );
-                      })}
+                  {filteredTasks && filteredTasks.length ? (
+                    filteredTasks.map((task: taskType) => {
+                      return (
+                        <li
+                          className="list-group-item p-2"
+                          key={task.id}
+                          onClick={() => {
+                            handleSelectTask({
+                              taskName: task.title,
+                              taskId: task.id,
+                            });
+                          }}
+                        >
+                          {task.title}
+                        </li>
+                      );
+                    })
+                  ) : (
+                    <h1>No Task Assigned </h1>
+                  )}
+
+                  <button onClick={() => setIsProjectSelected(false)}>
+                    Back
+                  </button>
                 </ul>
               )}
             </div>
@@ -109,7 +132,8 @@ export const SelectTaskPage = ({
               <Loader />
             ) : (
               <ul className="list-group">
-                {!!allProjects && !!allProjects.length && 
+                {!!allProjects &&
+                  !!allProjects.length &&
                   allProjects.map((data: any) => {
                     return (
                       <li

@@ -38,6 +38,8 @@ const Home = () => {
     taskId: 0,
   });
   const userData = decryptData("userData");
+const inputRef=useRef(null)
+
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
   };
@@ -183,6 +185,7 @@ const Home = () => {
           handleSelectProject={handleSelectProject}
           allProjects={allProjects}
           handleSelectTask={handleSelectTask}
+          setIsProjectSelected={setIsProjectSelected}
         />
       ) : (
         <div className="d-flex align-items-center justify-content-center main-wrapper">
@@ -218,6 +221,7 @@ const Home = () => {
                     type="checkbox"
                     role="switch"
                     id="trackingToggle"
+                    ref={inputRef}
                     onChange={(e) => handleChange(e)}
                   />
                 </div>
