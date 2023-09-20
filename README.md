@@ -10,8 +10,7 @@ A Time Tracker App is used for checking the employee work status by taking scree
 Clone the project
 
 ```bash
-# If you use npm
-  git clone https://link-to-project
+  git clone https://github.com/tusharraj5792/time-tracker.git
 ```
 
 Go to the project directory
