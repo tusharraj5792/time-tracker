@@ -43,7 +43,7 @@ Start the server
   yarn start
 ```
 
-After Starting the server,you need to start Time Tracker Desktop Application for that
+After Starting the server, you need to start Time Tracker Desktop Application for that
 
 Clone the project
 
@@ -81,7 +81,7 @@ Start the server
   yarn start
 ```
 ## Steps: How To Use
-After clone the project,have following steps are there,
+After clone the project, have following steps are there
 
 Step 1 : Login with your registered office account.
 
@@ -94,7 +94,7 @@ Step 4 : If you want to stop time tracker then click on switch button
 If you want to delete a screenshot then when a screenshot captured it display captured screenshot for their you can delete the screenshot by click on delete logo button
 ## Tech Stack
 
-**Client:** Vite With React Application,Typescript,Electron js,Axios,React Router Dom,React Hook Form,Bootstrap,SASS
+**Client:** Vite With React Application, Typescript, Electron js, Axios, React Router Dom, React Hook Form, Bootstrap, SASS
 
 **Server:** ASP.Net
 
