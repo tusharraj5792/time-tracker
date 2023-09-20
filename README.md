@@ -85,8 +85,6 @@ After clone the project,have following steps are there,
 
 Step 1 : Login with your registered office account.
 
-![](https://raw.githubusercontent.com/tusharraj5792/time-tracker/main/src/assets/readme-images/login.png?token=GHSAT0AAAAAACGTGWX4Z3RTCSBHOK2DCGFKZIK4I6A)
-
 Step 2 : Select project on which you need to work.
 
 Step 3 : Select task on which you need to work.
