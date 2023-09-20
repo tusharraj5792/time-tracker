@@ -15,6 +15,14 @@ export const useAuth = () => {
   }
 };
 
+export const removeTokens = () => {
+  document.cookie.split(";").forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, "")
+      .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+  });
+};
+
 export const encryptData = (name: string, data: string) => {
   const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), secretKey).toString();
   saveCookie(name, encrypted, 5);
