@@ -7,6 +7,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { ApiService } from "../../utils/api.services";
 import * as AppConstants from '../../utils/Constants';
 import FormFieldError from "../../components/formFieldError";
+import { useState } from "react";
 
 interface InputsType {
   email: string;
@@ -18,9 +19,10 @@ const googleAuthId = import.meta.env.VITE_GOOGLE_AUTH_ID;
 export const Login = () => {
   const navigate = useNavigate();
   const { register, handleSubmit,formState:{errors}} = useForm<InputsType>();
-
+const [isError,setIsError]=useState<boolean>(false)
   const redirectAfterLogin = (response: any) => {
     if (response.status === 200) {
+      setIsError(false)
       encryptData("userData", response.data);
       encryptData("authToken", response.data.token);
       const data = response.data;
@@ -45,7 +47,8 @@ export const Login = () => {
         redirectAfterLogin(response);
       })
       .catch((e) => {
-        console.log(e);
+        if(e.response.status)setIsError(true)
+
       });
   };
   return (
@@ -123,6 +126,14 @@ export const Login = () => {
             Sign-in
           </button>
         </form>
+        {isError?
+        <span className="text-danger d-flex item-center error-txt my-3">
+        <span>Please check the email or password is wrong</span>
+      </span>:null}
+        
+        
+        
+        
         {/* Login with google */}
         <div className="mt-3 d-flex justify-content-center">
           <GoogleOAuthProvider clientId={googleAuthId}>
