@@ -122,7 +122,7 @@ useEffect(() => {
 
   useEffect(() => {
     ipcRenderer.on("screenshot:captured", (_e: any, data: any) => {
-      console.log("imagedata",data);
+     
       const file = dataURLtoFile(
         data.image,
         `${new Date().toLocaleString()}_screenshot.png`

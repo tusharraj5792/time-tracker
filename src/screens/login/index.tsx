@@ -101,9 +101,6 @@ export const Login = () => {
               >
                 Password
               </label>
-              <a href="#" className="text-decoration-none text-danger">
-                Forgot password?
-              </a>
             </div>
             <input
               {...register("password",{required:true})}
@@ -116,21 +113,7 @@ export const Login = () => {
           {errors.password?.type === 'required' && (
             <FormFieldError message={AppConstants.requiredField} />
           )}
-          {/* <!-- checkbox --> */}
-          <div className="mb-3 mt-2 d-flex gap-2 align-items-start justify-content-start">
-            <input
-              className="form-check-input shadow-none outline-none"
-              type="checkbox"
-              value=""
-              id="checkbox"
-            />
-            <label
-              className="form-check-label text-secondary"
-              htmlFor="checkbox"
-            >
-              Remember me
-            </label>
-          </div>
+          
           {/* <!-- Sign in btn --> */}
           <button
             type="submit"
@@ -154,14 +137,7 @@ export const Login = () => {
             </div>
           </GoogleOAuthProvider>
         </div>
-        <div className="text-center text-secondary mt-3">
-          <p className="mb-0 text-">
-            Doesn't have an account?
-            <a className="text-danger text-decoration-none" href="#">
-              Sign Up
-            </a>
-          </p>
-        </div>
+      
       </div>
     </div>
   );
