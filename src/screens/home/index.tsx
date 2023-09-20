@@ -62,6 +62,7 @@ useEffect(() => {
       setProjectDetails({ projectName: "", id: 0 });
       setTaskDetails({ taskName: "", taskId: 0 });
       setIsProjectSelected(false);
+      setProjectId(0)
       handleCloseSelectTaskWindow();
     }
   };
@@ -133,7 +134,7 @@ useEffect(() => {
       setTimeout(async () => {
         setPreviousImage(data.image);
         if (!isDeletedCaptureImage && navigator.onLine) {
-          await handleSaveScreenshots(formData,data);
+         handleSaveScreenshots(formData,data);
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
           const storedScreenshots: any = JSON.parse(local);
