@@ -1,27 +1,102 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Time Tracker
 
-Currently, two official plugins are available:
+A Time Tracker App is used for checking the employee work status by taking screenshot of entire screen after several time and store's employee today total work hours    
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Run Locally
 
-- Configure the top-level `parserOptions` property like this:
+Clone the project
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+```bash
+# If you use npm
+  git clone https://link-to-project
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Go to the project directory
+
+```bash
+  cd time-tracker
+```
+
+Install dependencies
+
+```bash
+# If you use npm
+  npm install
+```
+
+```bash
+# Or if you use yarn
+  yarn install
+```
+
+Start the server
+
+```bash
+# If you use npm
+  npm run dev
+```
+
+```bash
+# Or if you use yarn
+  yarn start
+```
+
+After Starting the server,you need to start Time Tracker Desktop Application for that
+
+Clone the project
+
+```bash
+# If you use npm
+  git clone https://github.com/tusharraj5792/time-tracker-desktop.git
+```
+
+Go to the project directory
+
+```bash
+  cd time-tracker-desktop
+```
+
+Install dependencies
+
+```bash
+# If you use npm
+  npm install
+```
+
+```bash
+# Or if you use yarn
+  yarn install
+```
+
+Start the server
+
+```bash
+# If you use npm
+  npm start
+```
+
+```bash
+# Or if you use yarn
+  yarn start
+```
+## Steps: How To Use
+After clone the project,have following steps are there,
+
+Step 1 : Login with your registered office account.
+
+Step 2 : Select project on which you need to work.
+
+Step 3 : Select task on which you need to work.
+
+Step 4 : If you want to stop time tracker then click on switch button
+
+If you want to delete a screenshot then when a screenshot captured it display captured screenshot for their you can delete the screenshot by click on delete logo button
+## Tech Stack
+
+**Client:** Vite With React Application,Typescript,Electron js,Axios,React Router Dom,React Hook Form,Bootstrap,SASS
+
+**Server:** ASP.Net
+
