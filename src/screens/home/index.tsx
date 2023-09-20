@@ -9,6 +9,7 @@ const ipcRenderer =
   typeof window.require === "function"
     ? window.require("electron").ipcRenderer
     : false;
+    let isDeletedCaptureImage:boolean = false;
 const Home = () => {
   const ScreenshotWindowRef = useRef<any>(null);
   const SelectTaskWindowRef = useRef<any>(null);
@@ -40,7 +41,9 @@ const Home = () => {
   const userData = decryptData("userData");
 const inputRef=useRef(null)
 
-
+useEffect(() => {
+  isDeletedCaptureImage=isScreenshotDeleted;
+}, [isScreenshotDeleted])
 
   const handleCloseSelectTaskWindow = () => {
     SelectTaskWindowRef?.current?.closeWindow();
@@ -66,7 +69,8 @@ const inputRef=useRef(null)
   const handleDelete = () => {
     setIsScreenshotDeleted(true);
     setCurrentImage(previousImage);
-    handleCloseWindow();
+    setShowScreenshotCapturedWindow(false);
+    ScreenshotWindowRef?.current?.closeWindow();
   };
 
   const handleSelectProject = (id: number) => {
@@ -128,7 +132,7 @@ const inputRef=useRef(null)
       setCurrentImage(data.image);
       setTimeout(async () => {
         setPreviousImage(data.image);
-        if (!isScreenshotDeleted && navigator.onLine) {
+        if (!isDeletedCaptureImage && navigator.onLine) {
           await handleSaveScreenshots(formData,data);
         } else {
           const local: any = localStorage.getItem("screenshotUrl");
