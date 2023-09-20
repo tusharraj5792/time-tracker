@@ -105,7 +105,7 @@ useEffect(() => {
         setTotalTime((totalT) => totalT);
         setShowScreenshotCapturedWindow(true);
         ipcRenderer.send("screenshot:capture", {taskId:task.taskId, projectId});
-      }, 15000);
+      }, 300000);
     }
   };
 
@@ -151,7 +151,7 @@ useEffect(() => {
           );
         }
         handleCloseWindow();
-      }, 8000);
+      }, 5000);
     });
   }, []);
 
