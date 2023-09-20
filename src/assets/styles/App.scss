@@ -1,4 +1,19 @@
 body {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #ccc;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #f24759;
+    border-radius: 4px;
+  }
   #main-container {
     -webkit-app-region: no-drag;
   }
@@ -10,7 +25,7 @@ body {
 
     .tracker-main {
       width: 350px;
-      height: 530px;
+      height: 540px;
 
       .trcking-head {
         h2 {
