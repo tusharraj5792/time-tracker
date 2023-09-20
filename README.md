@@ -48,7 +48,6 @@ After Starting the server,you need to start Time Tracker Desktop Application for
 Clone the project
 
 ```bash
-# If you use npm
   git clone https://github.com/tusharraj5792/time-tracker-desktop.git
 ```
 
