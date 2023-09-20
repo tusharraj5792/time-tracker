@@ -1,6 +1,4 @@
-let css: any;
-
-css = `
+const css = `
 .screenshot-main {
   height: 100vh;
 }

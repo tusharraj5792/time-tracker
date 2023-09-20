@@ -1,14 +1,14 @@
 interface propsType {
-    message:string;
+  message: string;
 }
 
-const FormFieldError = ({message}:propsType) => {
+const FormFieldError = ({ message }: propsType) => {
   return (
-    <span className="text-danger d-flex item-center error-txt">
-      <img src="./error.svg" />
+    <span className='text-danger d-flex item-center error-txt'>
+      <img src='./error.svg' />
       <span>{message}</span>
     </span>
-  )
-}
+  );
+};
 
-export default FormFieldError
+export default FormFieldError;

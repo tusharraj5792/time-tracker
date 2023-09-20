@@ -1,6 +1,4 @@
-let css: any;
-
-css = `
+const css = `
 .main-wrapper {
   height: 100vh;
   font-family: "Lato", sans-serif;
